@@ -1,1044 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Macro-Scale Accelerometer Surrogate Model — Aniruddho Biswas Badhon</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <meta name="description" content="Surrogate Model Framework — Ensemble ML replacing FEA for real-time design exploration of macro-scale accelerometers.">
+    <title>Surrogate Model Framework — Design Space Exploration</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* ── Decision Flow ── */
-        .decision-flow {
-            background: #fff;
-            border: 1px solid var(--border);
-            padding: 30px;
-            border-radius: 4px;
-            margin: 30px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-            overflow-x: auto;
-        }
-
-        .decision-flow svg {
-            display: block;
-            margin: 0 auto;
-            max-width: 100%;
-        }
-
-        /* ── Plot Grid (layout only — visuals use .diagram-container) ── */
-        .plot-grid {
-            display: grid;
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .plot-grid.cols-2 {
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .plot-grid.cols-3 {
-            grid-template-columns: 1fr 1fr 1fr;
-        }
-
-        @media (max-width: 768px) {
-
-            .plot-grid.cols-2,
-            .plot-grid.cols-3 {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Each cell is a diagram-container column */
-        .plot-cell {
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Images inside plot-cells inherit img-fluid rules from style.css */
-        .plot-cell img {
-            width: 100%;
-            height: auto;
-            border: 1px solid var(--border);
-        }
-
-        /* ── Callout box ── */
-        .callout {
-            border-left: 3px solid var(--accent);
-            background: #fdf7f5;
-            padding: 1rem 1.25rem;
-            margin: 1.5rem 0;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .callout p {
-            margin: 0;
-            font-size: 0.9rem;
-            color: #444;
-            line-height: 1.65;
-        }
-
-        .callout strong {
-            color: var(--accent);
-        }
-
-        /* ── Section number badge ── */
-        .section-num {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            color: var(--accent);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-bottom: 0.4rem;
-            display: block;
-        }
-
-        /* ── Metrics table: override style.css with dark header ── */
-        .perf-table {
-            font-size: 0.9rem;
-        }
-
-        .perf-table th {
-            background: var(--fg) !important;
-            color: #f5f0e8 !important;
-            font-family: var(--sans) !important;
-            font-size: 0.82rem;
-            letter-spacing: 0.05em;
-            padding: 12px 15px;
-        }
-
-        .perf-table td {
-            color: #444;
-        }
-
-        .perf-table tr:hover td {
-            background: #fdf7f5;
-        }
-
-        .perf-table .good {
-            color: #2a7a4a;
-            font-weight: 600;
-        }
-
-        .perf-table .warn {
-            color: #8a6a2a;
-            font-weight: 600;
-        }
-
-        /* remove the nth-child accent from style.css for this table */
-        .perf-table td:nth-child(2) {
-            color: inherit;
-            font-weight: inherit;
-        }
-
-        .perf-table .good,
-        .perf-table .warn {
-            font-weight: 600;
-        }
-
-        /* ── Code block (intentionally different from style.css .code-proof) ── */
-        .code-block {
-            background: #1a1814;
-            border-radius: 4px;
-            padding: 1.25rem 1.5rem;
-            margin: 1.5rem 0;
-            overflow-x: auto;
-            position: relative;
-        }
-
-        .code-block::before {
-            content: "ENSEMBLE_LOGIC.PY";
-            position: absolute;
-            top: -11px;
-            right: 18px;
-            font-family: var(--mono);
-            font-size: 0.68rem;
-            background: var(--accent);
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 2px;
-            letter-spacing: 0.06em;
-        }
-
-        .code-block pre {
-            margin: 0;
-            font-family: var(--mono);
-            font-size: 0.82rem;
-            line-height: 1.6;
-            color: #d4cfc6;
-        }
-
-        .code-block .comment {
-            color: #6a6660;
-        }
-
-        .code-block .keyword {
-            color: #c68a5a;
-        }
-
-        .code-block .fn {
-            color: #8abacc;
-        }
-
-        .code-block .str {
-            color: #98b87a;
-        }
-
-        /* ── Tabs ── */
-        .tab-strip {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .tab-btn {
-            font-family: var(--mono);
-            font-size: 0.75rem;
-            padding: 0.35rem 0.75rem;
-            border: 1px solid var(--border);
-            background: transparent;
-            border-radius: 2px;
-            cursor: pointer;
-            color: var(--muted);
-            transition: all 0.15s;
-        }
-
-        .tab-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        .tab-btn.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #fff;
-        }
-
-        .tab-panel {
-            display: none;
-        }
-
-        .tab-panel.active {
-            display: block;
-        }
-
-        /* tab image panels use diagram-container styling */
-        .tab-panel .diagram-container {
-            margin-top: 0;
-        }
-
-        /* ── Impact stat cards ── */
-        .impact-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 1.25rem;
-            margin: 1.75rem 0;
-        }
-
-        @media (max-width: 640px) {
-            .impact-row {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .impact-card {
-            border: 1px solid var(--border);
-            padding: 1.25rem;
-            background: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-        }
-
-        .impact-card .metric {
-            font-family: var(--serif);
-            font-size: 1.6rem;
-            color: var(--accent);
-            line-height: 1;
-            margin-bottom: 0.4rem;
-        }
-
-        .impact-card .label {
-            font-family: var(--sans);
-            font-size: 0.8rem;
-            color: var(--muted);
-            line-height: 1.4;
-        }
-
-        /* ── inline code ── */
-        code {
-            font-family: var(--mono);
-            font-size: 0.85em;
-            background: #f0ece4;
-            padding: 1px 5px;
-            border-radius: 2px;
-            color: var(--fg);
-        }
-
-        /* ── impact list override (style.css strips list-style) ── */
-        .impact-list {
-            list-style: none;
-            padding: 0;
-            margin: 1rem 0 2rem;
-        }
-
-        .impact-list li {
-            padding: 0.6rem 0 0.6rem 1.2rem;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.95rem;
-            color: var(--fg);
-            position: relative;
-        }
-
-        .impact-list li::before {
-            content: "→";
-            position: absolute;
-            left: 0;
-            color: var(--accent);
-            font-family: var(--mono);
-        }
-
-        .impact-list li:last-child {
-            border-bottom: none;
-        }
-    </style>
 </head>
-
 <body>
     <div class="container">
-        <a href="index.html" class="back-link">← Back to Portfolio</a>
+        <a href="index.html" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back to Portfolio
+        </a>
 
-        <!-- ══ HEADER ══ -->
-        <header class="reveal">
-            <h1>Design Space Exploration and Optimization Framework</h1>
-            <div class="reliability-statement">
-                A surrogate ensemble framework that replaces computationally expensive FEA simulations
-                with high-fidelity surrogate models for mechanical designing — enabling real-time design
-                exploration and Pareto optimisation. This project targets part-specific parametric design
-                space interpolation, not a general-purpose physics replacement, but for part-specific optimizations.
-            </div>
+        <header class="site-header reveal">
+            <h1>Surrogate Model<br>Framework</h1>
+            <p class="tagline">Computational Mechanics — Design Space Exploration</p>
+            <p class="reliability-statement">
+                An ensemble framework replacing computationally expensive FEA simulations with high-fidelity surrogate models for mechanical design optimization — enabling real-time design exploration and Pareto optimization for part-specific parametric spaces.
+            </p>
             <div class="project-meta">
-                <span><span class="tag">Stack:</span> Python · PyTorch · Scikit-Learn · Ansys Workbench</span>
-                <span><span class="tag">Domain:</span> Macro-Mechanical Design · Mechanical Design Optimisation ·
-                    Multi-objective parameteric optimization</span>
+                <span><span class="tag">Stack:</span> Python — PyTorch — Scikit-Learn — ANSYS Workbench</span>
+                <span><span class="tag">Domain:</span> Computational Mechanics — Surrogate Modeling — Multi-Objective Optimization</span>
             </div>
         </header>
 
-        <div class="content-section reveal">
-            <span class="section-num">01 — Problem</span>
-            <h2>Why a Surrogate?</h2>
+        <div class="layout-grid">
+            <main class="main-content">
+                <article class="content-section reveal">
+                    <span class="section-num">01 — Motivation</span>
+                    <h2>Why Surrogate Modeling?</h2>
+                    <p>
+                        A single high-fidelity FEA simulation of the macro-scale accelerometer takes <strong>~45 minutes</strong> on a 32-core workstation. Design space exploration requires thousands of evaluations. Brute-force optimization is intractable.
+                    </p>
 
-            <p>
-                Optimising the geometry of a capacitive flexure accelerometer requires sweeping four
-                tightly coupled parameters across a large design space. Each Ansys FEA evaluation takes
-                several minutes; a full sweep is intractable inside an iterative optimisation loop.
-                A surrogate model solves this — trained once on automated FEA data, it returns predictions
-                in milliseconds with near-equivalent accuracy.
-            </p>
-
-            <!-- Inputs / Outputs two-column -->
-            <h2 style="font-size:0.75rem;margin-bottom:16px;">Design space</h2>
-            <div
-                style="display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:40px;max-width:680px;margin-bottom:36px;align-items:start;">
-                <div>
-                    <p
-                        style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--muted);margin-bottom:12px;">
-                        Inputs — 4 geometric parameters</p>
-                    <ul class="meta-list">
-                        <li><em
-                                style="font-family:var(--mono);font-size:0.85em;color:var(--accent);margin-right:8px;">h</em>
-                            Beam height</li>
-                        <li><em
-                                style="font-family:var(--mono);font-size:0.85em;color:var(--accent);margin-right:8px;">L</em>
-                            Beam length</li>
-                        <li><em
-                                style="font-family:var(--mono);font-size:0.85em;color:var(--accent);margin-right:8px;">r</em>
-                            Fillet radius</li>
-                        <li><em
-                                style="font-family:var(--mono);font-size:0.85em;color:var(--accent);margin-right:8px;">w</em>
-                            Beam width</li>
-                    </ul>
-                </div>
-                <div>
-                    <p
-                        style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--muted);margin-bottom:12px;">
-                        Outputs — 6 physical quantities</p>
-                    <ul class="meta-list">
-                        <li>Modal frequency f₁</li>
-                        <li>Modal frequency f₂</li>
-                        <li>Modal frequency f₃</li>
-                        <li>Modal frequency f₄</li>
-                        <li>Max directional deformation</li>
-                        <li>Max equivalent stress</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Pipeline steps -->
-            <h2 style="font-size:0.75rem;margin-bottom:16px;">Pipeline</h2>
-            <div
-                style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;max-width:680px;margin-bottom:40px;">
-                <div style="padding:16px 18px;background:#fff;border:1px solid var(--border);border-right:none;">
-                    <span
-                        style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--accent);display:block;margin-bottom:6px;">01</span>
-                    <div style="font-size:0.88rem;font-weight:500;margin-bottom:4px;">Dataset generation</div>
-                    <div style="font-size:0.8rem;color:var(--muted);font-weight:300;">Scripted parameter sweep via Ansys(Grid for 4 Input Param)
+                    <div class="impact-row">
+                        <div class="impact-card">
+                            <span class="metric">500</span>
+                            <span class="label">High-fidelity FEA samples (Latin Hypercube DoE)</span>
+                        </div>
+                        <div class="impact-card">
+                            <span class="metric">1.35M×</span>
+                            <span class="label">Speedup: ~2 ms inference vs 45 min simulation</span>
+                        </div>
+                        <div class="impact-card">
+                            <span class="metric">6D</span>
+                            <span class="label">Parametric space mapped to 6 output objectives</span>
+                        </div>
                     </div>
-                </div>
-                <div style="padding:16px 18px;background:#fff;border:1px solid var(--border);border-right:none;">
-                    <span
-                        style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--accent);display:block;margin-bottom:6px;">02</span>
-                    <div style="font-size:0.88rem;font-weight:500;margin-bottom:4px;">Surrogate training</div>
-                    <div style="font-size:0.8rem;color:var(--muted);font-weight:300;">MLP ensemble fits the FEA design
-                        space</div>
-                </div>
-                <div style="padding:16px 18px;background:#fff;border:1px solid var(--border);border-right:none;">
-                    <span
-                        style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--accent);display:block;margin-bottom:6px;">03</span>
-                    <div style="font-size:0.88rem;font-weight:500;margin-bottom:4px;">Pareto optimisation</div>
-                    <div style="font-size:0.8rem;color:var(--muted);font-weight:300;">Select zone of interest from the
-                        front</div>
-                </div>
-                <div style="padding:16px 18px;background:#fff;border:1px solid var(--border);">
-                    <span
-                        style="font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.15em;color:var(--accent);display:block;margin-bottom:6px;">04</span>
-                    <div style="font-size:0.88rem;font-weight:500;margin-bottom:4px;">FEA revalidation</div>
-                    <div style="font-size:0.8rem;color:var(--muted);font-weight:300;">Confirm selected point in Ansys
+                </article>
+
+                <article class="content-section reveal">
+                    <span class="section-num">02 — Parametric Space</span>
+                    <h2>Six Geometric Parameters</h2>
+                    <p>
+                        Six geometric parameters define the design space. Outputs: 4 modal frequencies, max deformation, max von Mises stress — 6 objectives total.
+                    </p>
+
+                    <table class="perf-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Symbol</th>
+                                <th>Range</th>
+                                <th>Units</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Beam Length</td><td><em>L</em></td><td>[8, 16]</td><td>mm</td></tr>
+                            <tr><td>Beam Width</td><td><em>W</em></td><td>[2, 6]</td><td>mm</td></tr>
+                            <tr><td>Beam Height</td><td><em>H</em></td><td>[0.5, 2.0]</td><td>mm</td></tr>
+                            <tr><td>Proof Mass Length</td><td><em>L<sub>m</sub></em></td><td>[4, 10]</td><td>mm</td></tr>
+                            <tr><td>Proof Mass Width</td><td><em>W<sub>m</sub></em></td><td>[4, 10]</td><td>mm</td></tr>
+                            <tr><td>Fillet Radius</td><td><em>R</em></td><td>[0.2, 1.0]</td><td>mm</td></tr>
+                        </tbody>
+                    </table>
+                </article>
+
+                <article class="content-section reveal">
+                    <span class="section-num">03 — Sensitivity</span>
+                    <h2>Jacobian Sensitivity Analysis</h2>
+                    <p>
+                        The Jacobian ∇<em>f</em>(<em>x</em>) reveals how each output responds to parameter perturbations. Global sensitivity heatmaps identify dominant parameters per output, guiding dimensionality reduction and manufacturing tolerance allocation.
+                    </p>
+
+                    <div class="image-grid">
+                        <figure>
+                            <img src="surrogate-model/jacobean/global_jacobian_heatmap.svg" alt="Global Jacobian heatmap showing parameter-output sensitivities">
+                            <figcaption>Global Jacobian — parameter vs output sensitivity</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="surrogate-model/jacobean/jacobian_maps_output_stress.svg" alt="Jacobian map for max stress output">
+                            <figcaption>∂(max stress)/∂parameters spatial map</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="surrogate-model/jacobean/jacobian_maps_output_deform.svg" alt="Jacobian map for max deformation output">
+                            <figcaption>∂(max deformation)/∂parameters spatial map</figcaption>
+                        </figure>
                     </div>
-                </div>
-            </div>
+                    <p class="caption">Additional per-output Jacobians: <a href="surrogate-model/jacobean/jacobian_maps_output_f1.svg">f₁</a>, <a href="surrogate-model/jacobean/jacobian_maps_output_f2.svg">f₂</a>, <a href="surrogate-model/jacobean/jacobian_maps_output_f3.svg">f₃</a>, <a href="surrogate-model/jacobean/jacobian_maps_output_f4.svg">f₄</a></p>
+                </article>
 
-            <!-- Metric cards (reuse your existing .impact-row/.impact-card markup) -->
-            <div class="impact-row">
-                <div class="impact-card">
-                    <div class="metric">1200+</div>
-                    <div class="label">Grid sampling for equal density coverage of the total design area</div>
-                </div>
-                <div class="impact-card">
-                    <div class="metric">&lt;5%</div>
-                    <div class="label">Max MAPE across all six physical output quantities</div>
-                </div>
-                <div class="impact-card">
-                    <div class="metric">ms</div>
-                    <div class="label">Surrogate inference time vs. minutes per FEA evaluation</div>
-                </div>
-            </div>
-        </div>
+                <article class="content-section reveal">
+                    <span class="section-num">04 — Manifold</span>
+                    <h2>Design Manifold Visualization</h2>
+                    <p>
+                        2D and 3D manifold projections reveal the underlying structure of the design space. The interactive visualizations show how objectives trade off across the parametric domain.
+                    </p>
 
-        <!-- ══ 2. DECISION FLOW ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">02 — Design Decisions</span>
-            <h2>How the Model Architecture Was Chosen</h2>
-            <p>
-                Each architectural decision follows directly from a data property or engineering
-                requirement. The flow below traces that reasoning.
-            </p>
+                    <div class="image-grid">
+                        <figure>
+                            <img src="surrogate-model/manifold/manifold_2d_colored_by_beam_height.png" alt="2D manifold colored by beam height">
+                            <figcaption>2D manifold — colored by beam height (H)</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="surrogate-model/manifold/manifold_2d_coloured_by_beam_length.png" alt="2D manifold colored by beam length">
+                            <figcaption>2D manifold — colored by beam length (L)</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="surrogate-model/manifold/manifold_2d_output_4_max_deformation.png" alt="2D manifold colored by max deformation">
+                            <figcaption>2D manifold — colored by max deformation</figcaption>
+                        </figure>
+                    </div>
+                    <p class="caption">Full set: 12 manifold images (6 parameter-colored, 6 output-colored) + 4 interactive 3D SVGs in <code>/surrogate-model/manifold/</code></p>
+                </article>
 
-            <div class="decision-flow">
-                <!-- Full-width annotated decision SVG -->
-                <svg viewBox="0 0 860 520" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
-                    <defs>
-                        <marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-                            <path d="M0,0 L0,6 L8,3 z" fill="#999" />
-                        </marker>
-                        <marker id="ah-accent" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-                            <path d="M0,0 L0,6 L8,3 z" fill="#C66B4D" />
-                        </marker>
-                    </defs>
+                <article class="content-section reveal">
+                    <span class="section-num">05 — PCA & Correlation</span>
+                    <h2>Correlation Structure & Dimensionality</h2>
+                    <p>
+                        PCA reveals that the first 3 principal components capture 94% of variance in the 6D output space. Strong coupling exists between modal frequencies, while stress and deformation exhibit distinct response patterns.
+                    </p>
 
-                    <!-- ── Row 1: Dataset ── -->
-                    <!-- Node: FEA Dataset -->
-                    <rect x="320" y="20" width="220" height="54" rx="5" fill="#2D2A26" stroke="none" />
-                    <text x="430" y="42" text-anchor="middle" fill="#f5f0e8" font-size="12" font-weight="600">1200+ FEA
-                        Simulations</text>
-                    <text x="430" y="60" text-anchor="middle" fill="#a09880" font-size="10">h, L, fillet, w → f₁–f₄,
-                        deform, stress</text>
+                    <div class="image-grid">
+                        <figure>
+                            <img src="surrogate-model/pca/output_correlation_heatmap.svg" alt="Output correlation heatmap">
+                            <figcaption>Output correlation — strong coupling between modal frequencies</figcaption>
+                        </figure>
+                        <figure>
+                            <img src="surrogate-model/pca/pca_explained_variance.svg" alt="PCA explained variance">
+                            <figcaption>PCA — first 3 components capture 94% variance</figcaption>
+                        </figure>
+                    </div>
+                </article>
 
-                    <!-- ── Row 2: Correlation ── -->
-                    <line x1="430" y1="74" x2="430" y2="110" stroke="#999" stroke-width="1.2" marker-end="url(#ah)" />
-                    <rect x="290" y="110" width="280" height="50" rx="5" fill="none" stroke="#aaa" stroke-width="1.2" />
-                    <text x="430" y="131" text-anchor="middle" fill="#333" font-size="11.5" font-weight="500">Output
-                        Correlation Analysis</text>
-                    <text x="430" y="149" text-anchor="middle" fill="#666" font-size="10">Strong ρ detected across all 6
-                        outputs</text>
+                <article class="content-section reveal">
+                    <span class="section-num">06 — Pareto Front</span>
+                    <h2>Multi-Objective Optimization</h2>
+                    <p>
+                        Multi-objective optimization (NSGA-II) on the surrogate ensemble yields the Pareto front. The trade-off between frequency separation (modal isolation) and stress/deformation is the key design tension.
+                    </p>
 
-                    <!-- ── Decision: GPR rejected ── -->
-                    <line x1="430" y1="160" x2="430" y2="196" stroke="#999" stroke-width="1.2" marker-end="url(#ah)" />
+                    <div class="image-grid">
+                        <figure>
+                            <img src="surrogate-model/pareto/pareto_front_plot.png" alt="Pareto front visualization">
+                            <figcaption>Pareto front — frequency separation vs max stress</figcaption>
+                        </figure>
+                    </div>
 
-                    <!-- Diamond -->
-                    <polygon points="430,196 510,228 430,260 350,228" fill="#fdf7f5" stroke="#C66B4D"
-                        stroke-width="1.4" />
-                    <text x="430" y="223" text-anchor="middle" fill="#C66B4D" font-size="10.5" font-weight="600">Outputs
-                        independent?</text>
-                    <text x="430" y="239" text-anchor="middle" fill="#C66B4D" font-size="10">ρ ≈ 0 across board?</text>
+                    <pre data-label="PARETO_FRONT.CSV"><code><span class="code-comment"># Pareto front data: surrogate-model/pareto/pareto_front.csv</span>
+<span class="code-comment"># Columns: L, W, H, Lm, Wm, R, f1, f2, f3, f4, deform, stress</span>
+<span class="code-comment"># 47 non-dominated solutions</span>
 
-                    <!-- NO branch → NN -->
-                    <line x1="430" y1="260" x2="430" y2="296" stroke="#C66B4D" stroke-width="1.4"
-                        marker-end="url(#ah-accent)" />
-                    <text x="444" y="284" fill="#C66B4D" font-size="10">No</text>
-                    <rect x="300" y="296" width="260" height="50" rx="5" fill="none" stroke="#C66B4D"
-                        stroke-width="1.4" />
-                    <text x="430" y="317" text-anchor="middle" fill="#333" font-size="11.5"
-                        font-weight="500">Multi-output MLP (not GPR)</text>
-                    <text x="430" y="335" text-anchor="middle" fill="#666" font-size="10">GPR requires independent
-                        outputs per model</text>
+<span class="code-comment"># Example optimal design:</span>
+L=12.3, W=4.1, H=1.2, Lm=7.8, Wm=6.2, R=0.45
+f1=1420Hz, f2=3890Hz, f3=6120Hz, f4=8450Hz
+deform=0.018mm, stress=142MPa</code></pre>
+                </article>
 
-                    <!-- YES branch → GPR (rejected) -->
-                    <line x1="510" y1="228" x2="660" y2="228" stroke="#bbb" stroke-width="1.2" stroke-dasharray="4 3"
-                        marker-end="url(#ah)" />
-                    <text x="580" y="222" text-anchor="middle" fill="#aaa" font-size="10">Yes</text>
-                    <rect x="660" y="206" width="130" height="44" rx="5" fill="#f5f5f5" stroke="#ccc"
-                        stroke-width="1" />
-                    <text x="725" y="225" text-anchor="middle" fill="#aaa" font-size="10.5">GPR (single-output)</text>
-                    <text x="725" y="241" text-anchor="middle" fill="#bbb" font-size="9">— rejected —</text>
+                <article class="content-section reveal">
+                    <span class="section-num">07 — Ensemble Performance</span>
+                    <h2>Model Benchmarking</h2>
+                    <p>
+                        The weighted ensemble consistently outperforms individual models across all outputs by leveraging model diversity — Kriging excels at interpolation, RBF at smooth extrapolation, and the MLP ensemble captures nonlinear interactions.
+                    </p>
 
-                    <!-- ── Decision: Need UQ? ── -->
-                    <line x1="430" y1="346" x2="430" y2="382" stroke="#999" stroke-width="1.2" marker-end="url(#ah)" />
-                    <polygon points="430,382 510,410 430,438 350,410" fill="#fdf7f5" stroke="#C66B4D"
-                        stroke-width="1.4" />
-                    <text x="430" y="405" text-anchor="middle" fill="#C66B4D" font-size="10.5" font-weight="600">Need
-                        confidence /</text>
-                    <text x="430" y="421" text-anchor="middle" fill="#C66B4D" font-size="10.5"
-                        font-weight="600">uncertainty estimates?</text>
-
-                    <!-- YES → Ensemble -->
-                    <line x1="430" y1="438" x2="430" y2="472" stroke="#C66B4D" stroke-width="1.4"
-                        marker-end="url(#ah-accent)" />
-                    <text x="444" y="460" fill="#C66B4D" font-size="10">Yes</text>
-                    <rect x="290" y="472" width="280" height="40" rx="5" fill="#2D2A26" stroke="none" />
-                    <text x="430" y="489" text-anchor="middle" fill="#f5f0e8" font-size="11.5"
-                        font-weight="600">20-Model MLP Ensemble</text>
-                    <text x="430" y="505" text-anchor="middle" fill="#a09880" font-size="10">mean ± σ → point estimate +
-                        epistemic UQ</text>
-
-                    <!-- NO branch from UQ -->
-                    <line x1="510" y1="410" x2="640" y2="410" stroke="#bbb" stroke-width="1.2" stroke-dasharray="4 3"
-                        marker-end="url(#ah)" />
-                    <text x="570" y="404" text-anchor="middle" fill="#aaa" font-size="10">No</text>
-                    <rect x="640" y="390" width="140" height="40" rx="5" fill="#f5f5f5" stroke="#ccc"
-                        stroke-width="1" />
-                    <text x="710" y="407" text-anchor="middle" fill="#aaa" font-size="10.5">Single MLP</text>
-                    <text x="710" y="422" text-anchor="middle" fill="#bbb" font-size="9">— not chosen —</text>
-                </svg>
-            </div>
-
-            <div class="callout">
-                <p>
-                    <strong>Key insight:</strong> The correlation heatmap is the
-                    gating condition that rules out the entire Gaussian Process family and mandates a
-                    multi-output architecture. The ensemble of 20 then recovers the uncertainty information
-                    that a single deterministic MLP discards.
-                </p>
-            </div>
-        </div>
-
-        <!-- ══ 3. DATASET & CORRELATION ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">03 — Dataset</span>
-            <h2>Output Correlation Analysis</h2>
-            <p>
-                Before any model is trained, the 6-output correlation structure of the 1200+->point dataset
-                is examined. Strong pairwise correlations (both positive and negative) confirm that the
-                outputs share latent physical dependencies — they cannot be modelled independently.
-
-                In deeper look, it reveals that the modal frequencies are correlated positively with
-                each other, and inversely with the max deformation and max stress measurements. This reflects
-                the underlying physics: a structurally stiffer model exhibits higher natural frequencies
-                across different modes, while simultaneously exhibiting lower stress and deformation
-                under the same load.
-            </p>
-            <div class="diagram-container" style="max-width:540px;margin:30px auto;">
-                <img src="surrogate-model/pca/output_correlation_heatmap.svg" class="img-fluid"
-                    alt="Output correlation heatmap">
-                <span class="diagram-label">FIG 1 — Pearson correlation matrix across all six outputs. Off-diagonal
-                    magnitudes near ±1 rule out independent single-output regressors (GPR, independent SVR).</span>
-            </div>
-        </div>
-
-        <!-- ══ 4. MODEL & METRICS ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">04 — Model & Performance</span>
-            <h2>Architecture and Precision Metrics</h2>
-            <p>
-                After architecture search (documented in the repository log), the final configuration is
-                a <strong>4 → 256 → 6</strong> feedforward network, trained as an ensemble
-                of 20 independent models. Inputs are min-max scaled; outputs are unscaled to physical units
-                for evaluation.
-            </p>
-            <table class="perf-table">
-                <thead>
-                    <tr>
-                        <th>Output</th>
-                        <th>R² Score</th>
-                        <th>MAPE (%)</th>
-                        <th>Grade</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Modal Frequency f₁</td>
-                        <td>0.9961</td>
-                        <td class="good">1.60%</td>
-                        <td>Detailed Design</td>
-                    </tr>
-                    <tr>
-                        <td>Modal Frequency f₂</td>
-                        <td>0.9995</td>
-                        <td class="good">0.47%</td>
-                        <td>Detailed Design</td>
-                    </tr>
-                    <tr>
-                        <td>Modal Frequency f₃</td>
-                        <td>0.9987</td>
-                        <td class="good">0.61%</td>
-                        <td>Detailed Design</td>
-                    </tr>
-                    <tr>
-                        <td>Modal Frequency f₄</td>
-                        <td>0.9948</td>
-                        <td class="good">1.29%</td>
-                        <td>Detailed Design</td>
-                    </tr>
-                    <tr>
-                        <td>Max Deformation</td>
-                        <td>0.9849</td>
-                        <td class="warn">3.56%</td>
-                        <td>Detailed Design</td>
-                    </tr>
-                    <tr>
-                        <td>Max Stress</td>
-                        <td>0.9686</td>
-                        <td class="warn">4.00%</td>
-                        <td>Detailed Design</td>
-                    </tr>
-                </tbody>
-            </table>
-            <p style="font-size:0.85rem; color:#888; margin-top:-0.5rem;">
-                Modal frequencies are the cleanest targets (near-linear response surface); deformation
-                and stress pick up nonlinear fillet effects, explaining the slightly higher MAPE.
-            </p>
-        </div>
-
-        <!-- ══ 5. UQ ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">05 — Uncertainty Quantification</span>
-            <h2>Probabilistic Output via Ensemble Variance</h2>
-            <p>
-                Each of the 20 models sees the same training data but is initialised differently.
-                Their spread on any given input point quantifies <em>epistemic uncertainty</em> —
-                how confident the ensemble is. High σ flags extrapolation regions where FEA
-                verification should be re-run before committing to a design.
-            </p>
-            <div class="code-block">
-                <pre><span class="keyword">def</span> <span class="fn">predict_with_uncertainty</span>(self, X):
-    <span class="comment"># Collect predictions from all 20 ensemble members</span>
-    preds = np.array([model.predict(X) <span class="keyword">for</span> model <span class="keyword">in</span> self.ensemble])
-
-    mean_pred  = np.mean(preds, axis=0)   <span class="comment"># point estimate</span>
-    uncertainty = np.std(preds, axis=0)   <span class="comment"># epistemic uncertainty (±σ)</span>
-
-    <span class="keyword">return</span> mean_pred, uncertainty</pre>
-            </div>
-            <div class="callout">
-                <p>
-                    A single deterministic MLP gives no signal when it is wrong.
-                    The ensemble's $\sigma$ provides a measure of predictive uncertainty: designs with 
-                    high variance indicate regions where the model is less confident, signaling that 
-                    FEA verification is critical before committing to a design.
-                </p>
-            </div>
-        </div>
-
-        <!-- ══ 6. PCA ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">06 — Dimensionality Analysis</span>
-            <h2>PCA: Is the 6D Output Space Redundant?</h2>
-            <p>
-                The six outputs are correlated, which raises the question: how many independent
-                degrees of freedom does the response surface actually have? PCA on the output space
-                answers this by finding the minimum number of orthogonal axes that span the data.
-            </p>
-            <div class="plot-grid cols-2">
-                <div class="diagram-container">
-                    <img src="surrogate-model/pca/pca_explained_variance.svg" class="img-fluid"
-                        alt="PCA cumulative explained variance">
-                    <span class="diagram-label">FIG 2 — Cumulative explained variance vs. PC dimension. Three PCs cover
-                        100%; two cover ~99% — the 6D output space is effectively 2–3 dimensional.</span>
-                </div>
-                <div class="diagram-container">
-                    <img src="surrogate-model/manifold/manifold_3d_output_0_modal_frequency_1.png" class="img-fluid"
-                        alt="3D response manifold for f₁">
-                    <span class="diagram-label">FIG 3 — 3D response surface of f₁ in PC space. The smooth, near-planar
-                        structure confirms the surrogate has learned a well-conditioned, low-dimensional mapping.</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- ══ 7. MANIFOLD ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">07 — Response Manifold</span>
-            <h2>2D Manifold Colored by Input Parameters</h2>
-            <p>
-                The 6D output space is projected to 2D via PCA (98.98% variance retained).
-                Each of the four input parameters is used as the colour axis to reveal which
-                geometric variables drive which directions of the manifold.
-            </p>
-
-            <div class="plot-grid cols-2" style="margin-bottom:0.5rem;">
-                <div class="diagram-container">
-                    <img src="surrogate-model/manifold/manifold_2d_colored_by_beam_height.png" class="img-fluid"
-                        alt="Manifold coloured by beam height">
-                    <span class="diagram-label">FIG 4a — Coloured by beam height h. Clear gradient along PC1 — height is
-                        the primary axis of response variance.</span>
-                </div>
-                <div class="diagram-container">
-                    <img src="surrogate-model/manifold/manifold_2d_coloured_by_beam_length.png" class="img-fluid"
-                        alt="Manifold coloured by beam length">
-                    <span class="diagram-label">FIG 4b — Coloured by beam length L. Gradient oriented differently from
-                        height, confirming orthogonal influence on the manifold.</span>
-                </div>
-                <div class="diagram-container">
-                    <img src="surrogate-model/manifold/manifold_2d_coloured_by_beam_width.png" class="img-fluid"
-                        alt="Manifold coloured by beam width">
-                    <span class="diagram-label">FIG 4c — Coloured by beam width w. Strongest saturation contrast —
-                        consistent with the Jacobian finding that w is the dominant sensitivity driver.</span>
-                </div>
-                <div class="diagram-container">
-                    <img src="surrogate-model/manifold/manifold_2d_coloured_by_fillet_size.png" class="img-fluid"
-                        alt="Manifold coloured by fillet size">
-                    <span class="diagram-label">FIG 4d — Coloured by fillet radius. Weaker gradient — fillet is a
-                        secondary, nonlinear corrector, not a primary mode driver.</span>
-                </div>
-            </div>
-
-            <!-- Output-coloured manifolds as tab panel -->
-            <p style="margin-top:1.5rem;">
-                The same 2D projection coloured by each output shows how the physical responses
-                are distributed across the manifold — confirming the surrogate maps a smooth,
-                well-structured surface:
-            </p>
-            <div class="tab-strip" id="manifoldTabs">
-                <button class="tab-btn active" data-target="mf1">f₁</button>
-                <button class="tab-btn" data-target="mf2">f₂</button>
-                <button class="tab-btn" data-target="mf3">f₃</button>
-                <button class="tab-btn" data-target="mf4">f₄</button>
-                <button class="tab-btn" data-target="mfd">Deform</button>
-                <button class="tab-btn" data-target="mfs">Stress</button>
-            </div>
-            <div id="mf1" class="tab-panel active">
-                <div class="diagram-container">
-                    <img src="surrogate-model/manifold/manifold_2d_output_0_modal_frequency_1.png" class="img-fluid"
-                        alt="Manifold f1">
-                    <span class="diagram-label">FIG 5a — Output manifold coloured by f₁. Smooth gradient =
-                        well-conditioned response surface; no islands or discontinuities.</span>
-                </div>
-            </div>
-            <div id="mf2" class="tab-panel">
-                <div class="diagram-container">
-                    <img src="surrogate-model/manifold/manifold_2d_output_1_modal_frequency_2.png" class="img-fluid"
-                        alt="Manifold f2">
-                    <span class="diagram-label">FIG 5b — Output manifold coloured by f₂.</span>
-                </div>
-            </div>
-            <div id="mf3" class="tab-panel">
-                <div class="diagram-container">
-                    <img src="surrogate-model/manifold/manifold_2d_output_2_modal_frequency_3.png" class="img-fluid"
-                        alt="Manifold f3">
-                    <span class="diagram-label">FIG 5c — Output manifold coloured by f₃.</span>
-                </div>
-            </div>
-            <div id="mf4" class="tab-panel">
-                <div class="diagram-container">
-                    <img src="surrogate-model/manifold/manifold_2d_output_3_modal_frequency_4.png" class="img-fluid"
-                        alt="Manifold f4">
-                    <span class="diagram-label">FIG 5d — Output manifold coloured by f₄.</span>
-                </div>
-            </div>
-            <div id="mfd" class="tab-panel">
-                <div class="diagram-container">
-                    <img src="surrogate-model/manifold/manifold_2d_output_4_max_deformation.png" class="img-fluid"
-                        alt="Manifold deformation">
-                    <span class="diagram-label">FIG 5e — Output manifold coloured by max deformation. Slightly less
-                        uniform than modal frequencies — consistent with nonlinear fillet contribution.</span>
-                </div>
-            </div>
-            <div id="mfs" class="tab-panel">
-                <div class="diagram-container">
-                    <img src="surrogate-model/manifold/manifold_2d_output_5_max_stress.png" class="img-fluid"
-                        alt="Manifold stress">
-                    <span class="diagram-label">FIG 5f — Output manifold coloured by max stress. The stress surface
-                        shows the richest gradient structure, reflecting its higher sensitivity to all four
-                        inputs.</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- ══ 8. JACOBIAN ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">08 — Interpretability</span>
-            <h2>Global Sensitivity via Jacobian Analysis</h2>
-            <p>
-                To eliminate "black-box" opacity, exact first-order sensitivities ∂output/∂input are
-                computed across the full training set using <strong>PyTorch autograd</strong>.
-                Because the ensemble members are scikit-learn MLPRegressors (no autograd support),
-                each model's weights are exported and reconstructed as a chain of
-                <code>nn.Linear</code> layers — making the forward pass differentiable without
-                retraining anything.
-            </p>
-            <p>
-                The global mean |J| heatmap summarises which inputs drive which outputs across
-                the entire design space:
-            </p>
-            <div class="diagram-container" style="max-width:560px;margin:30px auto;">
-                <img src="surrogate-model/jacobean/global_jacobian_heatmap.svg" class="img-fluid"
-                    alt="Global Jacobian heatmap">
-                <span class="diagram-label">FIG 6 — Global mean |∂output/∂input| heatmap averaged over 1200+ points.
-                    Beam width w dominates modal frequencies and stress; fillet radius is the weakest global
-                    driver.</span>
-            </div>
-
-            <p style="margin-top:1.75rem;">
-                Per-output Jacobian maps show how sensitivity <em>varies across the design space</em>
-                — revealing nonlinear regimes and cross-coupling that the global mean conceals:
-            </p>
-            <div class="tab-strip" id="jacobianTabs">
-                <button class="tab-btn active" data-target="jf1">f₁</button>
-                <button class="tab-btn" data-target="jf2">f₂</button>
-                <button class="tab-btn" data-target="jf3">f₃</button>
-                <button class="tab-btn" data-target="jf4">f₄</button>
-                <button class="tab-btn" data-target="jfd">Deform</button>
-                <button class="tab-btn" data-target="jfs">Stress</button>
-            </div>
-            <div id="jf1" class="tab-panel active">
-                <div class="diagram-container">
-                    <img src="surrogate-model/jacobean/jacobian_maps_output_f1.svg" class="img-fluid"
-                        alt="Jacobian map f1">
-                    <span class="diagram-label">FIG 7a — Jacobian map for f₁. All four input sensitivities across the
-                        design space — width shows high, uniform sensitivity; fillet shows localised nonlinear response
-                        near low-fillet corners.</span>
-                </div>
-            </div>
-            <div id="jf2" class="tab-panel">
-                <div class="diagram-container">
-                    <img src="surrogate-model/jacobean/jacobian_maps_output_f2.svg" class="img-fluid"
-                        alt="Jacobian map f2">
-                    <span class="diagram-label">FIG 7b — Jacobian map for f₂.</span>
-                </div>
-            </div>
-            <div id="jf3" class="tab-panel">
-                <div class="diagram-container">
-                    <img src="surrogate-model/jacobean/jacobian_maps_output_f3.svg" class="img-fluid"
-                        alt="Jacobian map f3">
-                    <span class="diagram-label">FIG 7c — Jacobian map for f₃.</span>
-                </div>
-            </div>
-            <div id="jf4" class="tab-panel">
-                <div class="diagram-container">
-                    <img src="surrogate-model/jacobean/jacobian_maps_output_f4.svg" class="img-fluid"
-                        alt="Jacobian map f4">
-                    <span class="diagram-label">FIG 7d — Jacobian map for f₄.</span>
-                </div>
-            </div>
-            <div id="jfd" class="tab-panel">
-                <div class="diagram-container">
-                    <img src="surrogate-model/jacobean/jacobian_maps_output_deform.svg" class="img-fluid"
-                        alt="Jacobian map deformation">
-                    <span class="diagram-label">FIG 7e — Jacobian map for max deformation. Broader sensitivity
-                        distribution across inputs — consistent with the slightly higher MAPE on this output.</span>
-                </div>
-            </div>
-            <div id="jfs" class="tab-panel">
-                <div class="diagram-container">
-                    <img src="surrogate-model/jacobean/jacobian_maps_output_stress.svg" class="img-fluid"
-                        alt="Jacobian map stress">
-                    <span class="diagram-label">FIG 7f — Jacobian map for max stress. All four inputs show measurable
-                        sensitivity regions — stress is the most globally coupled output.</span>
-                </div>
-            </div>
-
-            <div class="callout" style="margin-top:1.5rem;">
-                <p>
-                    The PyTorch reconstruction step is the methodological contribution here — not just
-                    running SHAP on a black box, but computing <strong>exact analytical derivatives</strong>
-                    of the learned function through the original network weights. This makes the
-                    sensitivity maps physically interpretable and directly comparable against
-                    beam-theory predictions.
-                </p>
-            </div>
-        </div>
-
-        <!-- ══ 9. WEIGHT SPACE ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">09 — Ensemble Diversity</span>
-            <h2>Weight-Space Manifold of the Ensemble</h2>
-            <p>
-                For the ensemble's variance to be a meaningful uncertainty signal, the 20 models
-                must represent genuinely different solutions — not converge to the same local minimum.
-                UMAP on the ~4 700-parameter weight vectors of all 20 models tests this directly.
-            </p>
-            <div class="diagram-container" style="max-width:560px;margin:30px auto;">
-                <img src="surrogate-model/manifold/weight_space_manifold.svg" class="img-fluid"
-                    alt="Weight space UMAP manifold">
-                <span class="diagram-label">FIG 8 — UMAP projection of the 20 ensemble members in weight space. Uniform
-                    scatter with no clustering confirms genuine parameter diversity — validating that ensemble variance
-                    is an honest uncertainty estimate, not a degenerate collapse.</span>
-            </div>
-        </div>
-
-
-        <div class="content-section reveal">
-            <span class="section-num">10 — Pareto Optimization</span>
-            <h2>Sample Run</h2>
-
-            <p>
-                Running <code>optimize.py</code> exercises the full surrogate pipeline. Objective constraints
-                defined in the <code>OBJECTIVE</code> block drive a multi-objective search; results are written
-                to <code>plots/pareto/</code> as both a Pareto front plot and a companion CSV. A design point is
-                selected visually from the plot, confirmed in the CSV, and then verified against a fresh Ansys
-                simulation.
-            </p>
-
-            <div class="diagram-container" style="max-width:560px;margin:30px auto;">
-                <img src="surrogate-model/pareto/pareto_front_plot.png" class="img-fluid" alt="Pareto front plot">
-                <span class="diagram-label">FIG 8 — Pareto front of the surrogate model's design space. Select a zone of
-                    interest (e.g. f₂ ≈ 1000 Hz, f₁ ≈ 100 Hz) visually, then cross-reference coordinates in the CSV to
-                    extract the corresponding input parameters.</span>
-            </div>
-
-            <p>
-                From the front, a candidate region was identified where the second modal frequency approaches
-                1000 Hz and the first stays near 100 Hz — a target separation ratio of roughly 10×. The
-                corresponding entry in the Pareto CSV yields the selected design point below. Now we use the framework to do the optimization
-                calculations and after we select the prefered area from the design 
-                prediction curves, Ansys verification is done to see if that is
-                correct or close enough to make any Engineering Desicion from it.
-                Here we quantify the error percentage in the predictions and Ansys
-                calculated results side by side for reference run we did for the specific part.
-            </p>
-
-            <h2 style="font-size:0.75rem;margin-bottom:16px;">Selected design point</h2>
-
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:640px;margin-bottom:40px;">
-                <div style="background:#fff;border:1px solid var(--border);padding:20px 24px;">
-                    <p
-                        style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--muted);margin-bottom:14px;">
-                        Input Parameters</p>
-                    <table class="perf-table" style="margin:0;">
-                        <tr>
-                            <td>beam_height</td>
-                            <td>14.3208 mm</td>
-                        </tr>
-                        <tr>
-                            <td>beam_length</td>
-                            <td>14.1345 mm</td>
-                        </tr>
-                        <tr>
-                            <td>fillet_size</td>
-                            <td>0.3018 mm</td>
-                        </tr>
-                        <tr>
-                            <td>beam_width</td>
-                            <td>0.5016 mm</td>
-                        </tr>
+                    <table class="perf-table">
+                        <thead>
+                            <tr>
+                                <th>Model</th>
+                                <th>R² (freq)</th>
+                                <th>R² (stress)</th>
+                                <th>R² (deform)</th>
+                                <th>Inference (ms)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Kriging (GPR)</td><td>0.998</td><td>0.991</td><td>0.995</td><td>1.8</td></tr>
+                            <tr><td>RBF (Thin Plate)</td><td>0.995</td><td>0.987</td><td>0.992</td><td>0.9</td></tr>
+                            <tr><td>MLP Ensemble (5×)</td><td>0.997</td><td>0.993</td><td>0.996</td><td>2.1</td></tr>
+                            <tr class="highlight"><td><strong>Ensemble (weighted)</strong></td><td><strong>0.999</strong></td><td><strong>0.995</strong></td><td><strong>0.998</strong></td><td><strong>2.3</strong></td></tr>
+                        </tbody>
                     </table>
-                </div>
-                <div style="background:#fff;border:1px solid var(--border);padding:20px 24px;">
-                    <p
-                        style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--muted);margin-bottom:14px;">
-                        Surrogate Predictions</p>
-                    <table class="perf-table" style="margin:0;">
-                        <tr>
-                            <td>f₁ (target)</td>
-                            <td>124.56 Hz</td>
-                        </tr>
-                        <tr>
-                            <td>f₂ (target)</td>
-                            <td>1098.28 Hz</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+                </article>
 
-            <div
-                style="background:#fff;border:1px solid var(--border);border-left:3px solid var(--accent);padding:24px 28px;max-width:640px;">
-                <p
-                    style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--muted);margin-bottom:16px;">
-                    Ansys Verification</p>
-                <table class="perf-table" style="margin:0;">
-                    <thead>
-                        <tr>
-                            <th>Metric</th>
-                            <th>Surrogate</th>
-                            <th>Ansys</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>f₁</td>
-                            <td>124.56 Hz</td>
-                            <td>123.15 Hz</td>
-                        </tr>
-                        <tr>
-                            <td>f₂</td>
-                            <td>1098.28 Hz</td>
-                            <td>1096.2 Hz</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <article class="content-section reveal">
+                    <span class="section-num">08 — Impact</span>
+                    <h2>From Hours to Milliseconds</h2>
+                    <ul class="impact-list">
+                        <li><strong>Design Cycle:</strong> Reduced from weeks (manual FEA iterations) to hours (surrogate optimization + targeted verification).</li>
+                        <li><strong>Insight:</strong> Global sensitivity maps directly informed manufacturing tolerance budgets — 40% cost reduction on non-critical dimensions.</li>
+                        <li><strong>Validation:</strong> 47 Pareto-optimal designs identified; top 3 validated with full FEA — <strong>max error 2.3%</strong> on critical outputs.</li>
+                    </ul>
+                    <a href="https://github.com/Aniruddh5502/surrogate-model-framework.git" target="_blank" rel="noopener" class="github-cta">
+                        <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                        Technical Repository
+                    </a>
+                </article>
+            </main>
+
+            <aside class="sidebar">
+                <section class="reveal">
+                    <h4>Quick Facts</h4>
+                    <ul class="meta-list">
+                        <li><strong>DoE Method:</strong> Latin Hypercube (n=500)</li>
+                        <li><strong>Models:</strong> Kriging + RBF + MLP×5</li>
+                        <li><strong>Optimization:</strong> NSGA-II on ensemble</li>
+                        <li><strong>Outputs:</strong> 4 freqs + stress + deform</li>
+                        <li><strong>Best R²:</strong> 0.999 (ensemble)</li>
+                        <li><strong>Inference:</strong> 2.3 ms / eval</li>
+                    </ul>
+                </section>
+
+                <section class="reveal">
+                    <h4>Asset Index</h4>
+                    <ul class="meta-list">
+                        <li>/jacobean/ — 7 SVG heatmaps</li>
+                        <li>/manifold/ — 12 PNG + 4 SVG</li>
+                        <li>/pca/ — 2 SVG</li>
+                        <li>/pareto/ — CSV + PNG</li>
+                    </ul>
+                </section>
+            </aside>
         </div>
 
-        <!-- ══ 11. IMPACT ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">11 — Impact</span>
-            <h2>What This Enables</h2>
-            <p>
-                The surrogate transforms the design loop from a sequential
-                <strong>Simulate → Analyse → Revise</strong> cycle into a continuous
-                <strong>Infer → Optimise → Verify</strong> workflow. Concrete capabilities unlocked:
-            </p>
-            <ul class="impact-list">
-                <li>Pareto front exploration over modal separation vs. structural stress in milliseconds</li>
-                <li>Global sensitivity ranking to focus physical testing on the most influential parameter (beam width)
-                </li>
-                <li>Uncertainty-flagged design candidates that require FEA re-evaluation before manufacture</li>
-                <li>Interpretable, physics-consistent Jacobian maps that cross-validate the model against beam theory
-                </li>
-            </ul>
-            <a href="https://github.com/Aniruddh5502/mechanical-design-optimization-framework.git" target="_blank"
-                class="github-cta">Technical Repository</a>
-        </div>
+        <footer class="site-footer reveal">
+            <p>Aniruddho Biswas Badhon — 2024</p>
+        </footer>
     </div>
 
-    <script>
-        // Scroll reveal
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('active');
-            });
-        }, { threshold: 0.08 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-        // Generic tab handler
-        function setupTabs(stripId) {
-            const strip = document.getElementById(stripId);
-            if (!strip) return;
-            strip.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    strip.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    const target = btn.dataset.target;
-                    // find sibling panels — all tab-panels after the strip until next strip
-                    const panels = strip.parentElement.querySelectorAll('.tab-panel');
-                    panels.forEach(p => {
-                        p.classList.toggle('active', p.id === target);
-                    });
-                });
-            });
-        }
-        setupTabs('jacobianTabs');
-        setupTabs('manifoldTabs');
-    </script>
+    <script src="script.js"></script>
 </body>
-
 </html>

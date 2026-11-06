@@ -1,379 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fault Tolerant System Design — Aniruddho Biswas Badhon</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <meta name="description" content="Fault-Tolerant System Design — Autonomous self-healing firmware for safety-critical ESP32 environments.">
+    <title>Fault-Tolerant System Design — ESP32</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* ── Decision Flow ── */
-        .decision-flow {
-            background: #fff;
-            border: 1px solid var(--border);
-            padding: 30px;
-            border-radius: 4px;
-            margin: 30px 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-            overflow-x: auto;
-        }
-
-        .decision-flow svg {
-            display: block;
-            margin: 0 auto;
-            max-width: 100%;
-        }
-
-        /* ── Callout box ── */
-        .callout {
-            border-left: 3px solid var(--accent);
-            background: #fdf7f5;
-            padding: 1rem 1.25rem;
-            margin: 1.5rem 0;
-            border-radius: 0 4px 4px 0;
-        }
-
-        .callout p {
-            margin: 0;
-            font-size: 0.9rem;
-            color: #444;
-            line-height: 1.65;
-        }
-
-        .callout strong {
-            color: var(--accent);
-        }
-
-        /* ── Section number badge ── */
-        .section-num {
-            font-family: var(--mono);
-            font-size: 0.7rem;
-            color: var(--accent);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            margin-bottom: 0.4rem;
-            display: block;
-        }
-
-        /* ── Metrics table ── */
-        .perf-table {
-            font-size: 0.9rem;
-        }
-
-        .perf-table th {
-            background: var(--fg) !important;
-            color: #f5f0e8 !important;
-            font-family: var(--sans) !important;
-            font-size: 0.82rem;
-            letter-spacing: 0.05em;
-            padding: 12px 15px;
-        }
-
-        .perf-table td {
-            color: #444;
-        }
-
-        .perf-table tr:hover td {
-            background: #fdf7f5;
-        }
-
-        /* ── Code block ── */
-        .code-block {
-            background: #1a1814;
-            border-radius: 4px;
-            padding: 1.25rem 1.5rem;
-            margin: 1.5rem 0;
-            overflow-x: auto;
-            position: relative;
-        }
-
-        .code-block::before {
-            content: "TMR_VOTER.CPP";
-            position: absolute;
-            top: -11px;
-            right: 18px;
-            font-family: var(--mono);
-            font-size: 0.68rem;
-            background: var(--accent);
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 2px;
-            letter-spacing: 0.06em;
-        }
-
-        .code-block pre {
-            margin: 0;
-            font-family: var(--mono);
-            font-size: 0.82rem;
-            line-height: 1.6;
-            color: #d4cfc6;
-        }
-
-        .code-block .comment { color: #6a6660; }
-        .code-block .keyword { color: #c68a5a; }
-        .code-block .fn { color: #8abacc; }
-
-        /* ── Impact stat cards ── */
-        .impact-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 1.25rem;
-            margin: 1.75rem 0;
-        }
-
-        @media (max-width: 640px) {
-            .impact-row { grid-template-columns: 1fr; }
-        }
-
-        .impact-card {
-            border: 1px solid var(--border);
-            padding: 1.25rem;
-            background: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-        }
-
-        .impact-card .metric {
-            font-family: var(--serif);
-            font-size: 1.6rem;
-            color: var(--accent);
-            line-height: 1;
-            margin-bottom: 0.4rem;
-        }
-
-        .impact-card .label {
-            font-family: var(--sans);
-            font-size: 0.8rem;
-            color: var(--muted);
-            line-height: 1.4;
-        }
-
-        .impact-list {
-            list-style: none;
-            padding: 0;
-            margin: 1rem 0 2rem;
-        }
-
-        .impact-list li {
-            padding: 0.6rem 0 0.6rem 1.2rem;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.95rem;
-            color: var(--fg);
-            position: relative;
-        }
-
-        .impact-list li::before {
-            content: "→";
-            position: absolute;
-            left: 0;
-            color: var(--accent);
-            font-family: var(--mono);
-        }
-
-        .impact-list li:last-child { border-bottom: none; }
-    </style>
 </head>
-
 <body>
     <div class="container">
-        <a href="index.html" class="back-link">← Back to Portfolio</a>
+        <a href="index.html" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back to Portfolio
+        </a>
 
-        <!-- ══ HEADER ══ -->
-        <header class="reveal">
-            <h1>Fault Tolerant System Design</h1>
-            <div class="reliability-statement">
+        <header class="site-header reveal">
+            <h1>Fault-Tolerant<br>System Design</h1>
+            <p class="tagline">ESP32 — Autonomous Self-Healing Firmware</p>
+            <p class="reliability-statement">
                 A deterministic embedded architecture designed for safety-critical firmware, mitigating single-event upsets (SEU) and flash corruption in aerospace and industrial environments through Triple Modular Redundancy (TMR) and autonomous self-healing.
-            </div>
+            </p>
             <div class="project-meta">
-                <span><span class="tag">Stack:</span> ESP32 · C++ · Python · Arduino-CLI · esptool</span>
-                <span class="tag">Domain:</span> Aerospace / Industrial IoT · Reliability Engineering · Fail-Operational Systems
+                <span><span class="tag">Stack:</span> ESP32 — C++ — Python — Arduino-CLI — esptool</span>
+                <span><span class="tag">Domain:</span> Aerospace / Industrial IoT — Reliability Engineering — Fail-Operational Systems</span>
             </div>
         </header>
 
-        <!-- ══ 01. PROBLEM ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">01 — Problem</span>
-            <h2>The Fragility of Single-Image Systems</h2>
-            <p>
-                In high-radiation or electrically noisy environments, a single bit-flip in the flash memory (SEU) or a partial write during an OTA update can render a device completely bricked. Standard recovery mechanisms often rely on a single backup, but if both the primary and backup are corrupted, the system fails catastrophically.
-            </p>
+        <div class="layout-grid">
+            <main class="main-content">
+                <article class="content-section reveal">
+                    <span class="section-num">01 — Problem</span>
+                    <h2>The Fragility of Single-Image Systems</h2>
+                    <p>
+                        In high-radiation or electrically noisy environments, a single bit-flip in the flash memory (SEU) or a partial write during an OTA update can render a device completely bricked. Standard recovery mechanisms often rely on a single backup, but if both the primary and backup are corrupted, the system fails catastrophically.
+                    </p>
 
-            <div class="impact-row">
-                <div class="impact-card">
-                    <span class="metric">Triple</span>
-                    <span class="label">Redundant OTA partitions (ota_0, ota_1, ota_2) to ensure a "Golden Image" always exists.</span>
-                </div>
-                <div class="impact-card">
-                    <span class="metric">3×3 Matrix</span>
-                    <span class="label">Two-layer TMR voting for RAM and CPU operations to eliminate transient faults.</span>
-                </div>
-                <div class="impact-card">
-                    <span class="metric">Zero</span>
-                    <span class="label">Downtime. The system repairs itself in the background while the main control loop continues.</span>
-                </div>
-            </div>
-        </div>
+                    <div class="impact-row">
+                        <div class="impact-card">
+                            <span class="metric">Triple</span>
+                            <span class="label">Redundant OTA partitions (ota_0, ota_1, ota_2) to ensure a "Golden Image" always exists</span>
+                        </div>
+                        <div class="impact-card">
+                            <span class="metric">3×3 Matrix</span>
+                            <span class="label">Two-layer TMR voting for RAM and CPU operations to eliminate transient faults</span>
+                        </div>
+                        <div class="impact-card">
+                            <span class="metric">Zero</span>
+                            <span class="label">Downtime. The system repairs itself in the background while the main control loop continues</span>
+                        </div>
+                    </div>
+                </article>
 
-        <!-- ══ 02. ARCHITECTURE ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">02 — Architecture</span>
-            <h2>Autonomous Self-Healing Loop</h2>
-            <p>
-                The system implements a "Watchdog-Reparation" cycle. Upon boot and periodically during runtime, the agent scans all available OTA slots. If an invalid image is detected, the system dynamically selects the healthiest available slot as the source to rebuild the corrupted partition.
-            </p>
+                <article class="content-section reveal">
+                    <span class="section-num">02 — Architecture</span>
+                    <h2>Autonomous Self-Healing Loop</h2>
+                    <p>
+                        The system implements a "Watchdog-Reparation" cycle. Upon boot and periodically during runtime, the agent scans all available OTA slots. If an invalid image is detected, the system dynamically selects the healthiest available slot as the source to rebuild the corrupted partition.
+                    </p>
 
-            <div class="decision-flow">
-                <svg viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
-                    <defs>
-                        <marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-                            <path d="M0,0 L0,6 L8,3 z" fill="#999" />
-                        </marker>
-                        <marker id="ah-accent" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-                            <path d="M0,0 L0,6 L8,3 z" fill="#C66B4D" />
-                        </marker>
-                    </defs>
-                    <rect x="20" y="30" width="120" height="60" rx="8" fill="#2D2A26" />
-                    <text x="80" y="65" text-anchor="middle" fill="#f5f0e8" font-size="12" font-weight="600">PARTITION SCAN</text>
+                    <div class="decision-flow">
+                        <svg viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg" font-family="AnthropicSans, sans-serif">
+                            <defs>
+                                <marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                                    <path d="M0,0 L0,6 L8,3 z" fill="#8c857d" />
+                                </marker>
+                                <marker id="ah-accent" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                                    <path d="M0,0 L0,6 L8,3 z" fill="#EE7733" />
+                                </marker>
+                            </defs>
+                            <rect x="20" y="30" width="120" height="60" rx="8" fill="#1a1816" stroke="#EE7733" stroke-width="2" />
+                            <text x="80" y="52" text-anchor="middle" fill="#f5f0e8" font-size="11" font-weight="600">PARTITION</text>
+                            <text x="80" y="68" text-anchor="middle" fill="#f5f0e8" font-size="11" font-weight="600">SCAN</text>
 
-                    <rect x="180" y="30" width="140" height="60" rx="8" fill="none" stroke="#C66B4D" stroke-width="2" />
-                    <text x="250" y="65" text-anchor="middle" fill="#333" font-size="12" font-weight="600">FAULT DETECTED</text>
+                            <rect x="180" y="30" width="140" height="60" rx="8" fill="none" stroke="#EE7733" stroke-width="2" />
+                            <text x="250" y="65" text-anchor="middle" fill="#f5f0e8" font-size="11" font-weight="600">FAULT</text>
+                            <text x="250" y="80" text-anchor="middle" fill="#f5f0e8" font-size="11" font-weight="600">DETECTED</text>
 
-                    <rect x="360" y="30" width="140" height="60" rx="8" fill="none" stroke="#aaa" stroke-width="1.5" />
-                    <text x="430" y="65" text-anchor="middle" fill="#333" font-size="12" font-weight="600">S-H REPAIR</text>
+                            <rect x="360" y="30" width="140" height="60" rx="8" fill="none" stroke="#8c857d" stroke-width="1.5" />
+                            <text x="430" y="65" text-anchor="middle" fill="#f5f0e8" font-size="11" font-weight="600">SELF-HEAL</text>
+                            <text x="430" y="80" text-anchor="middle" fill="#f5f0e8" font-size="11" font-weight="600">REPAIR</text>
 
-                    <rect x="540" y="30" width="40" height="60" rx="8" fill="#f5f5f5" stroke="#ccc" />
-                    <text x="560" y="65" text-anchor="middle" fill="#666" font-size="10" font-weight="600">OK</text>
+                            <rect x="540" y="30" width="40" height="60" rx="8" fill="#24211e" stroke="#3d3833" />
+                            <text x="560" y="65" text-anchor="middle" fill="#8c857d" font-size="10" font-weight="600">OK</text>
 
-                    <line x1="140" y1="60" x2="180" y2="60" stroke="#999" stroke-width="1.5" marker-end="url(#ah)" />
-                    <line x1="320" y1="60" x2="360" y2="60" stroke="#C66B4D" stroke-width="1.5" marker-end="url(#ah-accent)" />
-                    <line x1="500" y1="60" x2="540" y2="60" stroke="#999" stroke-width="1.5" marker-end="url(#ah)" />
-                </svg>
-            </div>
+                            <line x1="140" y1="60" x2="180" y2="60" stroke="#8c857d" stroke-width="1.5" marker-end="url(#ah)" />
+                            <line x1="320" y1="60" x2="360" y2="60" stroke="#EE7733" stroke-width="1.5" marker-end="url(#ah-accent)" />
+                            <line x1="500" y1="60" x2="540" y2="60" stroke="#8c857d" stroke-width="1.5" marker-end="url(#ah)" />
+                        </svg>
+                    </div>
 
-            <div class="callout">
-                <p>
-                    <strong>Technical Detail:</strong> The "Golden Image" is not fixed. Any partition that passes the 
-                    <code>ESP_ERR_IMAGE_VALID</code> check can act as the source, allowing the system to evolve its 
-                    firmware across all slots while maintaining a safety net.
-                </p>
-            </div>
-        </div>
+                    <div class="callout">
+                        <p>
+                            <strong>Technical Detail:</strong> The "Golden Image" is not fixed. Any partition that passes the <code>ESP_ERR_IMAGE_VALID</code> check can act as the source, allowing the system to evolve its firmware across all slots while maintaining a safety net.
+                        </p>
+                    </div>
+                </article>
 
-        <!-- ══ 03. MITIGATION ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">03 — Mitigation Matrix</span>
-            <h2>From Random Failure to Deterministic Recovery</h2>
-            <p>
-                The system treats hardware instability as a data-corruption problem, applying a tiered defense 
-                strategy across different memory and compute domains.
-            </p>
-            <table class="perf-table">
-                <thead>
-                    <tr>
-                        <th>Failure Scenario</th>
-                        <th>Mitigation Strategy</th>
-                        <th>System Outcome</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Flash Bit-Flip (OTA Partition)</td>
-                        <td>Triple Redundancy & SHA-256</td>
-                        <td>Autonomous repair from valid slot</td>
-                    </tr>
-                    <tr>
-                        <td>RAM Corruption (Critical Var)</td>
-                        <td>Two-Layer TMR (3×3 Matrix)</td>
-                        <td>Correct value recovered via voting</td>
-                    </tr>
-                    <tr>
-                        <td>Transient CPU Fault (Math)</td>
-                        <td>Symmetric Redundant Compute</td>
-                        <td>Majority vote eliminates outliers</td>
-                    </tr>
-                    <tr>
-                        <td>System Hang (Flash Op)</td>
-                        <td>Task Watchdog Timer (TWDT)</td>
-                        <td>Deterministic reboot to valid image</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                <article class="content-section reveal">
+                    <span class="section-num">03 — Mitigation Matrix</span>
+                    <h2>From Random Failure to Deterministic Recovery</h2>
+                    <p>
+                        The system treats hardware instability as a data-corruption problem, applying a tiered defense strategy across different memory and compute domains.
+                    </p>
 
-        <!-- ══ 04. TMR IMPLEMENTATION ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">04 — TMR Implementation</span>
-            <h2>Combatting Compiler Optimization</h2>
-            <p>
-                A naive implementation of redundancy <code>(a+b, a+b, a+b)</code> is often collapsed into a single 
-                operation by the <code>-O2</code> or <code>-Os</code> compiler flags. To ensure true physical 
-                redundancy, I used <strong>volatile qualifiers</strong>, <strong>compiler memory barriers</strong>, 
-                and <strong>expression diversity</strong>.
-            </p>
-            <div class="code-block">
-                <pre><span class="comment">// TMR-wrapped addition with expression diversity</span>
-<span class="keyword">static float</span> <span class="fn">add</span>(float a, float b) {
-    float res[3][3];
-    <span class="keyword">for</span> (int i = 0; i < 3; i++) {
-        <span class="keyword">for</span> (int j = 0; j < 3; j++) {
-            <span class="keyword">volatile float</span> tmp;
-            <span class="keyword">if</span> ((i + j) % 3 == 0)      tmp = a + b; <span class="comment">// standard</span>
-            <span class="keyword">else if</span> ((i + j) % 3 == 1) tmp = b + a; <span class="comment">// swapped</span>
-            <span class="keyword">else</span>                      tmp = a; tmp += b; <span class="comment">// accumulation</span>
+                    <table class="perf-table">
+                        <thead>
+                            <tr>
+                                <th>Failure Scenario</th>
+                                <th>Mitigation Strategy</th>
+                                <th>System Outcome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Flash Bit-Flip (OTA Partition)</td>
+                                <td>Triple Redundancy and SHA-256</td>
+                                <td>Autonomous repair from valid slot</td>
+                            </tr>
+                            <tr>
+                                <td>RAM Corruption (Critical Var)</td>
+                                <td>Two-Layer TMR (3×3 Matrix)</td>
+                                <td>Correct value recovered via voting</td>
+                            </tr>
+                            <tr>
+                                <td>Transient CPU Fault (Math)</td>
+                                <td>Symmetric Redundant Compute</td>
+                                <td>Majority vote eliminates outliers</td>
+                            </tr>
+                            <tr>
+                                <td>System Hang (Flash Op)</td>
+                                <td>Task Watchdog Timer (TWDT)</td>
+                                <td>Deterministic reboot to valid image</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </article>
+
+                <article class="content-section reveal">
+                    <span class="section-num">04 — TMR Implementation</span>
+                    <h2>Combatting Compiler Optimization</h2>
+                    <p>
+                        A naive implementation of redundancy <code>(a+b, a+b, a+b)</code> is often collapsed into a single operation by the <code>-O2</code> or <code>-Os</code> compiler flags. To ensure true physical redundancy, I used <strong>volatile qualifiers</strong>, <strong>compiler memory barriers</strong>, and <strong>expression diversity</strong>.
+                    </p>
+
+                    <pre data-label="TMR_VOTER.CPP"><code><span class="code-comment">// TMR-wrapped addition with expression diversity</span>
+<span class="code-keyword">static float</span> <span class="code-fn">add</span>(<span class="code-type">float</span> a, <span class="code-type">float</span> b) {
+    <span class="code-type">float</span> res[3][3];
+    <span class="code-keyword">for</span> (<span class="code-type">int</span> i = 0; i < 3; i++) {
+        <span class="code-keyword">for</span> (<span class="code-type">int</span> j = 0; j < 3; j++) {
+            <span class="code-keyword">volatile float</span> tmp;
+            <span class="code-keyword">if</span> ((i + j) % 3 == 0)      tmp = a + b; <span class="code-comment">// standard</span>
+            <span class="code-keyword">else if</span> ((i + j) % 3 == 1) tmp = b + a; <span class="code-comment">// swapped</span>
+            <span class="code-keyword">else</span>                      tmp = a; tmp += b; <span class="code-comment">// accumulation</span>
             res[i][j] = tmp;
-            asm volatile(<span class="str">""</span> ::: <span class="str">"memory"</span>); <span class="comment">// Memory Barrier</span>
+            asm <span class="code-keyword">volatile</span>(<span class="code-str">""</span> ::: <span class="code-str">"memory"</span>); <span class="code-comment">// Memory Barrier</span>
         }
     }
-    <span class="keyword">return</span> twoStageTMR(res);
-}</pre>
-            </div>
+    <span class="code-keyword">return</span> twoStageTMR(res);
+}</code></pre>
 
-            <div class="diagram-container">
-                <svg width="600" height="150" viewBox="0 0 600 150" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
-                    <g transform="translate(50, 40)">
-                        <rect x="0" y="0" width="40" height="20" fill="#f5f2eb" stroke="#2D2A26"/>
-                        <rect x="45" y="0" width="40" height="20" fill="#f5f2eb" stroke="#2D2A26"/>
-                        <rect x="90" y="0" width="40" height="20" fill="#f5f2eb" stroke="#2D2A26"/>
-                        <rect x="0" y="25" width="40" height="20" fill="#f5f2eb" stroke="#2D2A26"/>
-                        <rect x="45" y="25" width="40" height="20" fill="#f5f2eb" stroke="#2D2A26"/>
-                        <rect x="90" y="25" width="40" height="20" fill="#f5f2eb" stroke="#2D2A26"/>
-                        <rect x="0" y="50" width="40" height="20" fill="#f5f2eb" stroke="#2D2A26"/>
-                        <rect x="45" y="50" width="40" height="20" fill="#f5f2eb" stroke="#2D2A26"/>
-                        <rect x="90" y="50" width="40" height="20" fill="#f5f2eb" stroke="#2D2A26"/>
-                        <text x="-30" y="35" font-size="10" text-anchor="middle">3×3 Matrix</text>
-                    </g>
-                    <line x1="170" y1="75" x2="230" y2="75" stroke="#999" stroke-width="1.5" marker-end="url(#ah)" />
-                    <g transform="translate(240, 40)">
-                        <rect x="0" y="0" width="80" height="70" rx="8" fill="none" stroke="#C66B4D" stroke-width="2"/>
-                        <text x="40" y="35" text-anchor="middle" font-size="10" font-weight="600">Layer 1</text>
-                        <text x="40" y="50" text-anchor="middle" font-size="10">Voter</text>
-                    </g>
-                    <line x1="320" y1="75" x2="380" y2="75" stroke="#999" stroke-width="1.5" marker-end="url(#ah)" />
-                    <g transform="translate(390, 40)">
-                        <rect x="0" y="0" width="80" height="70" rx="8" fill="none" stroke="#C66B4D" stroke-width="2"/>
-                        <text x="40" y="35" text-anchor="middle" font-size="10" font-weight="600">Layer 2</text>
-                        <text x="40" y="50" text-anchor="middle" font-size="10">Voter</text>
-                    </g>
-                    <line x1="470" y1="75" x2="530" y2="75" stroke="#999" stroke-width="1.5" marker-end="url(#ah)" />
-                    <text x="540" y="78" font-size="12" font-weight="600">VALID</text>
-                </svg>
-                <span class="diagram-label">FIG 2.0: Two-Stage TMR Voting Logic — Eliminating Single Points of Failure</span>
-            </div>
-        </div>
+                    <div class="diagram-container">
+                        <svg width="600" height="160" viewBox="0 0 600 160" xmlns="http://www.w3.org/2000/svg" font-family="AnthropicMono, monospace">
+                            <defs>
+                                <marker id="ah2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                                    <path d="M0,0 L0,6 L8,3 z" fill="#8c857d" />
+                                </marker>
+                                <marker id="ah-accent2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                                    <path d="M0,0 L0,6 L8,3 z" fill="#EE7733" />
+                                </marker>
+                            </defs>
+                            <g transform="translate(50, 40)">
+                                <rect x="0" y="0" width="40" height="20" fill="#24211e" stroke="#3d3833"/>
+                                <text x="20" y="14" text-anchor="middle" font-size="8" fill="#f5f0e8">a+b</text>
+                                <rect x="45" y="0" width="40" height="20" fill="#24211e" stroke="#3d3833"/>
+                                <text x="65" y="14" text-anchor="middle" font-size="8" fill="#f5f0e8">b+a</text>
+                                <rect x="90" y="0" width="40" height="20" fill="#24211e" stroke="#3d3833"/>
+                                <text x="110" y="14" text-anchor="middle" font-size="8" fill="#f5f0e8">a;+b</text>
+                                <rect x="0" y="25" width="40" height="20" fill="#24211e" stroke="#3d3833"/>
+                                <text x="20" y="39" text-anchor="middle" font-size="8" fill="#f5f0e8">a+b</text>
+                                <rect x="45" y="25" width="40" height="20" fill="#24211e" stroke="#3d3833"/>
+                                <text x="65" y="39" text-anchor="middle" font-size="8" fill="#f5f0e8">b+a</text>
+                                <rect x="90" y="25" width="40" height="20" fill="#24211e" stroke="#3d3833"/>
+                                <text x="110" y="39" text-anchor="middle" font-size="8" fill="#f5f0e8">a;+b</text>
+                                <rect x="0" y="50" width="40" height="20" fill="#24211e" stroke="#3d3833"/>
+                                <text x="20" y="64" text-anchor="middle" font-size="8" fill="#f5f0e8">a+b</text>
+                                <rect x="45" y="50" width="40" height="20" fill="#24211e" stroke="#3d3833"/>
+                                <text x="65" y="64" text-anchor="middle" font-size="8" fill="#f5f0e8">b+a</text>
+                                <rect x="90" y="50" width="40" height="20" fill="#24211e" stroke="#3d3833"/>
+                                <text x="110" y="64" text-anchor="middle" font-size="8" fill="#f5f0e8">a;+b</text>
+                                <text x="-35" y="35" font-size="9" text-anchor="middle" fill="#8c857d">3×3 Matrix</text>
+                            </g>
+                            <line x1="170" y1="115" x2="230" y2="115" stroke="#8c857d" stroke-width="1.5" marker-end="url(#ah2)" />
+                            <g transform="translate(240, 40)">
+                                <rect x="0" y="0" width="80" height="70" rx="8" fill="none" stroke="#EE7733" stroke-width="2"/>
+                                <text x="40" y="30" text-anchor="middle" font-size="9" font-weight="600" fill="#f5f0e8">Layer 1</text>
+                                <text x="40" y="44" text-anchor="middle" font-size="9" fill="#f5f0e8">Voter</text>
+                            </g>
+                            <line x1="320" y1="115" x2="380" y2="115" stroke="#8c857d" stroke-width="1.5" marker-end="url(#ah2)" />
+                            <g transform="translate(390, 40)">
+                                <rect x="0" y="0" width="80" height="70" rx="8" fill="none" stroke="#EE7733" stroke-width="2"/>
+                                <text x="40" y="30" text-anchor="middle" font-size="9" font-weight="600" fill="#f5f0e8">Layer 2</text>
+                                <text x="40" y="44" text-anchor="middle" font-size="9" fill="#f5f0e8">Voter</text>
+                            </g>
+                            <line x1="470" y1="115" x2="530" y2="115" stroke="#8c857d" stroke-width="1.5" marker-end="url(#ah2)" />
+                            <text x="545" y="118" font-size="11" font-weight="600" fill="#EE7733">VALID</text>
+                        </svg>
+                        <span class="diagram-label">FIG 2.0 — Two-Stage TMR Voting Logic: Eliminating Single Points of Failure</span>
+                    </div>
+                </article>
 
-        <!-- ══ 05. VALIDATION ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">05 — Validation</span>
-            <h2>Fault Injection & Recovery Log</h2>
-            <p>
-                Verification was performed using a Python-based fault injector that writes garbage data to specific 
-                OTA flash offsets. The logs show the system detecting an <code>ESP_ERR_IMAGE_INVALID</code> state 
-                and initiating a background repair from a secondary valid partition.
-            </p>
-            <div class="code-block">
-                <pre><span class="comment"># Fault Injection Sequence</span>
+                <article class="content-section reveal">
+                    <span class="section-num">05 — Validation</span>
+                    <h2>Fault Injection and Recovery Log</h2>
+                    <p>
+                        Verification was performed using a Python-based fault injector that writes garbage data to specific OTA flash offsets. The logs show the system detecting an <code>ESP_ERR_IMAGE_INVALID</code> state and initiating a background repair from a secondary valid partition.
+                    </p>
+
+                    <pre data-label="FAULT_INJECTOR.LOG"><code><span class="code-comment"># Fault Injection Sequence</span>
 [TEST]       Corrupting non-running partition ota_0...
 [OK]           Corrupted ota_0
 
@@ -386,44 +229,65 @@
 [INFO]       Repairing ota_0 &lt;- ota_2 (size: 1.3 MB)
 [INFO]       Repair successful, ota_0 is now VALID
 
-&lt;Normal Task&gt; System active — 0ms interruption observed.</pre>
-            </div>
-            <div class="callout">
-                <p>
-                    <strong>Verification:</strong> The <code>baseOperation</code> task maintained 100% uptime 
-                    during the corruption and repair of <code>ota_0</code>, proving the architecture is 
-                    truly fail-operational.
-                </p>
-            </div>
+&lt;Normal Task&gt; System active - 0ms interruption observed.</code></pre>
+
+                    <div class="callout">
+                        <p>
+                            <strong>Verification:</strong> The <code>baseOperation</code> task maintained 100% uptime during the corruption and repair of <code>ota_0</code>, proving the architecture is truly fail-operational.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="content-section reveal">
+                    <span class="section-num">06 — Impact</span>
+                    <h2>From Fragile to Fail-Operational</h2>
+                    <p>
+                        By decoupling boot validity from a single memory location and implementing computational redundancy, the system mitigates the primary risks of unattended operation in radiation-heavy or electrically noisy environments.
+                    </p>
+                    <ul class="impact-list">
+                        <li><strong>Zero-Touch Recovery:</strong> No manual reset or JTAG intervention required after catastrophic flash corruption.</li>
+                        <li><strong>TMR Precision:</strong> Mathematical operations are protected against transient CPU faults.</li>
+                        <li><strong>Continuous Availability:</strong> Repair cycles happen in parallel to the main control task.</li>
+                        <li><strong>Scalable Redundancy:</strong> Triple-slot architecture allows for simultaneous "Golden Image" and "A/B Update" patterns.</li>
+                    </ul>
+                    <a href="https://github.com/Aniruddh5502/fault-tolerant-system-design-ESP32.git" target="_blank" rel="noopener" class="github-cta">
+                        <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                        Technical Repository
+                    </a>
+                </article>
+            </main>
+
+            <aside class="sidebar">
+                <section class="reveal">
+                    <h4>Quick Facts</h4>
+                    <ul class="meta-list">
+                        <li><strong>MCU:</strong> ESP32 (Dual-core Xtensa)</li>
+                        <li><strong>Redundancy:</strong> Triple OTA partitions</li>
+                        <li><strong>Voting:</strong> Two-stage 3×3 TMR</li>
+                        <li><strong>Integrity:</strong> SHA-256 per partition</li>
+                        <li><strong>Watchdog:</strong> Task WDT (TWDT)</li>
+                        <li><strong>Validation:</strong> Python fault injector</li>
+                    </ul>
+                </section>
+
+                <section class="reveal">
+                    <h4>Failure Modes Covered</h4>
+                    <ul class="meta-list">
+                        <li>Flash bit-flip (SEU)</li>
+                        <li>OTA partial write</li>
+                        <li>RAM corruption</li>
+                        <li>Transient ALU fault</li>
+                        <li>Flash operation hang</li>
+                    </ul>
+                </section>
+            </aside>
         </div>
 
-        <!-- ══ 06. IMPACT ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">06 — Impact</span>
-            <h2>From Fragile to Fail-Operational</h2>
-            <p>
-                By decoupling boot validity from a single memory location and implementing computational redundancy, 
-                the system mitigates the primary risks of unattended operation in radiation-heavy or 
-                electrically noisy environments.
-            </p>
-            <ul class="impact-list">
-                <li><strong>Zero-Touch Recovery:</strong> No manual reset or JTAG intervention required after catastrophic flash corruption.</li>
-                <li><strong>TMR Precision:</strong> Mathematical operations are protected against transient CPU faults.</li>
-                <li><strong>Continuous Availability:</strong> Repair cycles happen in parallel to the main control task.</li>
-                <li><strong>Scalable Redundancy:</strong> Triple-slot architecture allows for simultaneous "Golden Image" and "A/B Update" patterns.</li>
-            </ul>
-            <a href="https://github.com/Aniruddh5502/fault-tolerant-system-design-ESP32.git" target="_blank" class="github-cta">Technical Repository</a>
-        </div>
+        <footer class="site-footer reveal">
+            <p>Aniruddho Biswas Badhon — 2024</p>
+        </footer>
     </div>
 
-    <script>
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('active');
-            });
-        }, { threshold: 0.08 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    </script>
+    <script src="script.js"></script>
 </body>
-
 </html>

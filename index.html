@@ -1,139 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aniruddho Biswas Badhon — Mechanical engineer building at the intersection of computational mechanics, embedded systems, and local-first AI.">
     <title>Aniruddho Biswas Badhon</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,600&family=Inter:wght@300;400;600&display=swap"
-        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia,serif' font-size='60' font-weight='bold' fill='%23EE7733'%3EA%3C/text%3E%3C/svg%3E">
 </head>
-
 <body>
     <div class="container">
-        <header class="reveal">
-            <h1 class="serif-display">Aniruddho <br><span class="calligraphic">Biswas Badhon</span></h1>
-            <div class="tagline">
-                <ul>
-                    <li>I build ML surrogate models that replace ANSYS simulation loops — a 20-model ensemble trained on
-                        1,296 FEM runs that predicts structural outputs in milliseconds where each simulation took
-                        minutes.</li>
-                    <li>I script parametric batch simulations in Ansys — automating hundreds of geometry-varied FEM
-                        configurations that would otherwise require manual GUI interaction for every single run.</li>
-                    <li>I build agentic AI systems on local hardware — autonomous agent loops with persistent memory,
-                        tool use, and context compaction, running fully on-device via Ollama.</li>
-                    <li>I take embedded hardware from design to firmware — STM32 and ESP32, FreeRTOS task scheduling,
-                        fault-tolerant TMR systems with OTA update pipelines.</li>
-                    <li>I design and manufacture functional parts on a Creality CR10 — ran a product-based business from
-                        BUET, handling design, production, and sales end-to-end.</li>
-                </ul>
-            </div>
+        <header class="site-header reveal">
+            <h1>Aniruddho Biswas <br><span style="color: var(--accent);">Badhon</span></h1>
+            <p class="tagline">
+                Mechanical engineer building at the intersection of computational mechanics, embedded systems, and local-first AI. I replace expensive simulations with millisecond surrogates, automate FEA workflows end-to-end, and run autonomous agents on consumer hardware — no cloud required.
+            </p>
         </header>
 
-        <div class="grid">
-            <div class="main-col">
+        <div class="layout-grid">
+            <main class="main-content">
                 <section class="reveal">
-                    <h2 class="serif-display">Selected <span class="calligraphic">Works</span></h2>
+                    <h2>Selected <span style="color: var(--accent);">Works</span></h2>
                     <ul class="project-list">
-                        <li class="serif-display">
-                            <a href="momobot.html">Momobot — Autonomous Agent Harness</a>
-                            <span class="project-desc">
-                                LangGraph-based autonomous agent running locally via Ollama on a 4GB Celeron system.
-                                Implements persistent flat-file semantic memory with CRUD tooling, token-aware context
-                                compaction at 100k threshold, subagent delegation with structured exit signaling, and
-                                exponential backoff retry logic for inference failures. 31B parameter model, no cloud
-                                dependency.
-                            </span>
+                        <li class="reveal reveal-delay-1">
+                            <h3><a href="surrogate-model.html">Surrogate Ensemble for FEA Acceleration</a></h3>
+                            <p class="project-desc">
+                                20-model MLP ensemble replacing 1,200+ Ansys simulations with millisecond inference. Multi-output regression (6 targets), ensemble UQ for epistemic uncertainty, exact Jacobian sensitivities via PyTorch weight reconstruction, and Pareto-driven design optimization with FEA revalidation.
+                            </p>
                         </li>
-                        <li class="serif-display">
-                            <a href="surrogate-model.html">Design Space Exploration and Optimization Framework</a>
-                            <span class="project-desc">
-                                20-model ensemble neural network surrogate trained on 1,296 ANSYS FEM simulations
-                                (6&#8308; full-factorial DoE) for a MEMS accelerometer. Replaces per-query FEM runtime
-                                with millisecond inference across 4 geometric inputs and 10 structural outputs. Includes
-                                Jacobian sensitivity analysis via autograd, UMAP weight-space diversity validation, and
-                                Pareto-front multi-objective optimization.
-                            </span>
+                        <li class="reveal reveal-delay-2">
+                            <h3><a href="momobot.html">Momobot — Autonomous Agent Harness</a></h3>
+                            <p class="project-desc">
+                                A LangGraph-based agent runtime executing locally via Ollama on a 4 GB Celeron. Features persistent flat-file semantic memory with CRUD tooling, token-aware context compaction at 100k tokens, subagent delegation with structured exit signals, and a persistent shell for arbitrary code execution.
+                            </p>
                         </li>
-                        <li class="serif-display">
-                            <a href="fault-tolerant.html">Fault Tolerant System Design</a>
-                            <span class="project-desc">
-                                TMR (Triple Modular Redundancy) firmware for an aerospace embedded system. Triple OTA
-                                partition layout with SHA256 verification, self-repair engine, round-robin failover,
-                                hardware watchdog, 2-layer 9-copy variable TMR class, and process TMR with volatile
-                                compiler barriers. Validated via a fault injection test harness.
-                            </span>
+                        <li class="reveal reveal-delay-3">
+                            <h3><a href="fault-tolerant.html">Fault-Tolerant System Design — ESP32</a></h3>
+                            <p class="project-desc">
+                                Autonomous self-healing firmware for safety-critical environments. Triple Modular Redundancy (TMR) with expression diversity to defeat compiler optimization, two-stage 3×3 matrix voting, SHA-256 verified OTA slots, and Python fault injector for validation.
+                            </p>
+                        </li>
+                        <li class="reveal reveal-delay-4">
+                            <h3><a href="ansys.html">ANSYS Parametric Automation</a></h3>
+                            <p class="project-desc">
+                                Workbench scripting and APDL automation for high-throughput finite element analysis. Enables automated geometry sweeps, adaptive mesh convergence, and result extraction for 1,200+ simulation datasets feeding surrogate model training.
+                            </p>
                         </li>
                     </ul>
                 </section>
 
-                <section class="reveal">
-                    <h2 class="serif-display">Education</h2>
+                <section class="reveal reveal-delay-5">
+                    <h2>Technical <span style="color: var(--accent);">Competencies</span></h2>
+                    <div class="competency-grid">
+                        <article class="competency-card reveal reveal-delay-1">
+                            <h4>Computational Mechanics</h4>
+                            <ul>
+                                <li>FEA / CFD — Ansys, OpenFOAM</li>
+                                <li>Surrogate Modeling — PyTorch, Scikit-Learn</li>
+                                <li>Optimization — Pareto, Bayesian, Gradient-based</li>
+                                <li>Uncertainty Quantification — Ensemble methods</li>
+                            </ul>
+                        </article>
+                        <article class="competency-card reveal reveal-delay-2">
+                            <h4>Embedded &amp; Systems</h4>
+                            <ul>
+                                <li>MCU — ESP32, STM32, FreeRTOS</li>
+                                <li>Firmware — C/C++, Arduino, Zephyr</li>
+                                <li>Protocols — I²C, SPI, UART, CAN</li>
+                                <li>PCB — KiCad, 4-layer stackup</li>
+                            </ul>
+                        </article>
+                        <article class="competency-card reveal reveal-delay-3">
+                            <h4>Agentic AI &amp; Software</h4>
+                            <ul>
+                                <li>LangGraph, FastAPI, Ollama</li>
+                                <li>Local LLM deployment, RAG</li>
+                                <li>Python, TypeScript, Bash</li>
+                                <li>Git, Docker, CI/CD</li>
+                            </ul>
+                        </article>
+                        <article class="competency-card reveal reveal-delay-4">
+                            <h4>Mechanical Design</h4>
+                            <ul>
+                                <li>SolidWorks — CSWA, CSWP, CSWE</li>
+                                <li>GD&amp;T, Tolerance Stack-up</li>
+                                <li>Additive &amp; Subtractive Manufacturing</li>
+                                <li>Thermal &amp; Structural Analysis</li>
+                            </ul>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="reveal reveal-delay-6">
+                    <h2>Education</h2>
                     <ul class="meta-list">
-                        <li>Bangladesh University of Engineering &amp; Technology (BUET)<br>
-                            <span style="color:var(--muted);font-size:0.9rem">B.Sc. Mechanical Engineering —
-                                2020–2026 (Graduated June 2026)</span>
-                        </li>
-                        <li>Notre Dame College<br>
-                            <span style="color:var(--muted);font-size:0.9rem">HSC — 2020</span>
-                        </li>
+                        <li><strong>B.Sc. Mechanical Engineering</strong> — Bangladesh University of Engineering and Technology (BUET), 2026. CGPA: 2.85/4.0</li>
                     </ul>
                 </section>
-            </div>
+            </main>
 
-            <div class="side-col">
+            <aside class="sidebar">
                 <section class="reveal">
-                    <h2 class="serif-display">Technical <span class="calligraphic">Proficiency</span></h2>
+                    <h4>Certifications</h4>
                     <ul class="meta-list">
-                        <li>SolidWorks — CAD, product design &amp; manufacturing</li>
-                        <li><a href="ansys.html">Ansys</a> — scripting, batch simulations, FEA-based ML model building
-                        </li>
-                        <li><a href="matlab.html">Matlab</a> — data processing, machine learning</li>
-                        <li>Blender — product visualization, photorealistic rendering (Cycles)</li>
-                        <li>Embedded Systems — ESP32, STM32, FreeRTOS</li>
-                        <li>Python, PyTorch — ML model building, surrogate pipelines, data pipelines</li>
-                        <li>LangGraph, LangChain — autonomous agent loops, tool use, persistent memory, context
-                            compaction</li>
+                        <li><a href="ansys.html">ANSYS Simulation Professional</a></li>
+                        <li><a href="matlab.html">MATLAB Onramp, Signal Processing, ML Onramp</a></li>
+                        <li><a href="solidworks.html">CSWA, CSWP, CSWE, CSWPA-SU</a></li>
                     </ul>
                 </section>
 
-                <section class="reveal">
-                    <h2 class="serif-display">Languages <span class="calligraphic">Known</span></h2>
+                <section class="reveal reveal-delay-1">
+                    <h4>Links</h4>
                     <ul class="meta-list">
-                        <li>C / C++</li>
-                        <li>Python</li>
-                        <li>HTML / CSS</li>
-                    </ul>
-                </section>
-
-                <section class="reveal">
-                    <h2 class="serif-display">Connect</h2>
-                    <ul class="meta-list contact-info">
-                        <li><a href="mailto:aniruddh5502@gmail.com">Email</a></li>
                         <li><a href="https://github.com/Aniruddh5502" target="_blank" rel="noopener">GitHub</a></li>
+                        <li><a href="https://linkedin.com/in/aniruddh5502" target="_blank" rel="noopener">LinkedIn</a></li>
+                        <li><a href="mailto:aniruddh5502@gmail.com">Email</a></li>
                     </ul>
                 </section>
-            </div>
+            </aside>
         </div>
+
+        <footer class="site-footer reveal">
+            <p>Aniruddho Biswas Badhon — 2024</p>
+        </footer>
     </div>
 
-    <script>
-        const observerOptions = {
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    </script>
+    <script src="script.js"></script>
 </body>
-
 </html>

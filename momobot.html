@@ -1,381 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Momobot — Autonomous Agent Harness — Aniruddho Biswas Badhon</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet">
+    <meta name="description" content="Momobot — A local-first autonomous agent harness built on LangGraph and Ollama.">
+    <title>Momobot — Autonomous Agent Harness</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* ── Overrides for a "Technical Agent" Aesthetic ── */
-        :root {
-            --radius-custom: 12px;
-        }
-
-        /* Decision Flow - Precision Grid */
-        .decision-flow {
-            background: #fff;
-            border: 1px solid var(--border);
-            padding: 40px;
-            border-radius: var(--radius-custom);
-            margin: 40px 0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-            overflow-x: auto;
-        }
-
-        .decision-flow svg {
-            display: block;
-            margin: 0 auto;
-            max-width: 100%;
-        }
-
-        /* Impact Cards - Modernized */
-        .impact-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin: 40px 0;
-        }
-
-        .impact-card {
-            border: 1px solid var(--border);
-            padding: 24px;
-            background: #fff;
-            border-radius: var(--radius-custom);
-            transition: var(--transition);
-        }
-
-        .impact-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.05);
-        }
-
-        .impact-card .metric {
-            font-family: var(--serif);
-            font-size: 2rem;
-            color: var(--accent);
-            line-height: 1;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .impact-card .label {
-            font-size: 0.85rem;
-            color: var(--muted);
-            line-height: 1.5;
-        }
-
-        /* Refined Tables */
-        .perf-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            margin: 30px 0;
-            border-radius: var(--radius-custom);
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-
-        .perf-table th {
-            background: var(--fg) !important;
-            color: #f5f0e8 !important;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-size: 0.75rem;
-            padding: 15px;
-        }
-
-        .perf-table td {
-            padding: 15px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        /* Technical Callouts */
-        .callout {
-            border-left: 4px solid var(--accent);
-            background: #fdf7f5;
-            padding: 20px 24px;
-            margin: 30px 0;
-            border-radius: 0 var(--radius-custom) var(--radius-custom) 0;
-        }
-
-        /* Code Block - a a la a developer's terminal */
-        .code-block {
-            background: #1a1814;
-            border-radius: var(--radius-custom);
-            padding: 2rem;
-            margin: 30px 0;
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        }
-
-        .code-block::before {
-            content: "CONTEXT_COMPACTION.PY";
-            position: absolute;
-            top: 0;
-            right: 20px;
-            font-family: var(--mono);
-            font-size: 0.65rem;
-            background: var(--accent);
-            color: #fff;
-            padding: 4px 12px;
-            border-radius: 0 0 4px 4px;
-        }
-
-        .code-block pre {
-            margin: 0;
-            font-family: var(--mono);
-            font-size: 0.9rem;
-            color: #d4cfc6;
-            line-height: 1.6;
-        }
-
-        .code-block .comment { color: #6a6660; font-style: italic; }
-        .code-block .keyword { color: #c68a5a; }
-        .code-block .fn { color: #8abacc; }
-
-        .section-num {
-            font-family: var(--mono);
-            font-size: 0.75rem;
-            color: var(--accent);
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .impact-list {
-            list-style: none;
-            padding: 0;
-            margin: 20px 0 40px;
-        }
-
-        .impact-list li {
-            padding: 12px 0 12px 30px;
-            border-bottom: 1px solid var(--border);
-            position: relative;
-            font-size: 1.05rem;
-        }
-
-        .impact-list li::before {
-            content: "→";
-            position: absolute;
-            left: 0;
-            color: var(--accent);
-            font-weight: bold;
-        }
-
-        @media (max-width: 800px) {
-            .impact-row { grid-template-columns: 1fr; }
-        }
-    </style>
 </head>
-
 <body>
     <div class="container">
-        <a href="index.html" class="back-link">← Back to Portfolio</a>
+        <a href="index.html" class="back-link">
+            <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back to Portfolio
+        </a>
 
-        <!-- ══ HEADER ══ -->
-        <header class="reveal">
-            <h1>Momobot: Autonomous Agent Harness</h1>
-            <div class="reliability-statement">
-                A local-first agentic AI system built on LangGraph and Ollama. Momobot orchestrates multi-step 
-                reasoning loops, manages persistent long-term memory, and executes complex tool chains 
-                entirely on-premise — bridging the gap between simple LLM chats and autonomous software agents.
-            </div>
+        <header class="site-header reveal">
+            <h1>Momobot</h1>
+            <p class="tagline">Autonomous Agent Harness</p>
+            <p class="reliability-statement">
+                A local-first agentic AI system built on LangGraph and Ollama. Momobot orchestrates multi-step reasoning loops, manages persistent long-term memory, and executes complex tool chains entirely on-premise — bridging the gap between simple LLM chats and autonomous software agents.
+            </p>
             <div class="project-meta">
-                <span><span class="tag">Stack:</span> Python · LangGraph · Ollama · Playwright · PowerShell</span>
-                <span><span class="tag">Domain:</span> Agentic AI · LLM Orchestration · Tool-Use · Context Management</span>
+                <span><span class="tag">Stack:</span> Python — LangGraph — Ollama — Playwright — PowerShell</span>
+                <span><span class="tag">Domain:</span> Agentic AI — LLM Orchestration — Tool-Use — Context Management</span>
             </div>
         </header>
 
-        <!-- ══ 01. THE PROBLEM ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">01 — Problem</span>
-            <h2>The "Chatbot" Limitation</h2>
-            <p>
-                Standard LLM interfaces are reactive: they wait for a prompt, provide a text response, and stop. 
-                True productivity requires an <strong>agent</strong> — a system that can break a goal into sub-tasks, 
-                execute tools, observe the result, and iterate until the goal is achieved without human 
-                intervention at every step.
-            </p>
+        <div class="layout-grid">
+            <main class="main-content">
+                <article class="content-section reveal">
+                    <span class="section-num">01 — Problem</span>
+                    <h2>The "Chatbot" Limitation</h2>
+                    <p>
+                        Standard LLM interfaces are reactive: they wait for a prompt, provide a text response, and stop. True productivity requires an <strong>agent</strong> — a system that can break a goal into sub-tasks, execute tools, observe the result, and iterate until the goal is achieved without human intervention at every step.
+                    </p>
 
-            <div class="impact-row">
-                <div class="impact-card">
-                    <span class="metric">Cyclic</span>
-                    <span class="label">LangGraph-based loop: Reason → Act → Observe → Repeat.</span>
-                </div>
-                <div class="impact-card">
-                    <span class="metric">Persistent</span>
-                    <span class="label">Keyword-indexed markdown shards for cross-session recall.</span>
-                </div>
-                <div class="impact-card">
-                    <span class="metric">Grounded</span>
-                    <span class="label">Persistent shell, vision OCR, and headless web-browsing.</span>
-                </div>
-            </div>
-        </div>
+                    <div class="impact-row">
+                        <div class="impact-card">
+                            <span class="metric">Cyclic</span>
+                            <span class="label">LangGraph-based loop: Reason — Act — Observe — Repeat</span>
+                        </div>
+                        <div class="impact-card">
+                            <span class="metric">Persistent</span>
+                            <span class="label">Keyword-indexed markdown shards for cross-session recall</span>
+                        </div>
+                        <div class="impact-card">
+                            <span class="metric">Grounded</span>
+                            <span class="label">Persistent shell, vision OCR, and headless web-browsing</span>
+                        </div>
+                    </div>
+                </article>
 
-        <!-- ══ 02. ARCHITECTURE ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">02 — Architecture</span>
-            <h2>The Agentic Loop</h2>
-            <p>
-                Momobot is not a linear pipeline. It is a state-machine defined by a LangGraph, allowing 
-                the LLM to loop back to reasoning after every tool execution.
-            </p>
+                <article class="content-section reveal">
+                    <span class="section-num">02 — Architecture</span>
+                    <h2>The Agentic Loop</h2>
+                    <p>
+                        Momobot is not a linear pipeline. It is a state-machine defined by a LangGraph, allowing the LLM to loop back to reasoning after every tool execution.
+                    </p>
 
-            <div class="decision-flow">
-                <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" font-family="Inter, sans-serif">
-                    <defs>
-                        <marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-                            <path d="M0,0 L0,6 L8,3 z" fill="#999" />
-                        </marker>
-                        <marker id="ah-accent" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
-                            <path d="M0,0 L0,6 L8,3 z" fill="#C66B4D" />
-                        </marker>
-                    </defs>
+                    <div class="decision-flow">
+                        <svg viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" font-family="AnthropicSans, sans-serif">
+                            <defs>
+                                <marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                                    <path d="M0,0 L0,6 L8,3 z" fill="#8c857d" />
+                                </marker>
+                                <marker id="ah-accent" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                                    <path d="M0,0 L0,6 L8,3 z" fill="#EE7733" />
+                                </marker>
+                            </defs>
 
-                    <!-- Nodes -->
-                    <rect x="50" y="110" width="120" height="60" rx="8" fill="#2D2A26" />
-                    <text x="110" y="145" text-anchor="middle" fill="#f5f0e8" font-size="12" font-weight="600">USER INPUT</text>
+                            <rect x="50" y="110" width="120" height="60" rx="8" fill="#1a1816" stroke="#EE7733" stroke-width="2" />
+                            <text x="110" y="138" text-anchor="middle" fill="#f5f0e8" font-size="11" font-weight="600">USER INPUT</text>
+                            <text x="110" y="154" text-anchor="middle" fill="#f5f0e8" font-size="11" font-weight="600">ENTRY</text>
 
-                    <rect x="230" y="110" width="140" height="60" rx="8" fill="none" stroke="#C66B4D" stroke-width="2" />
-                    <text x="300" y="145" text-anchor="middle" fill="#333" font-size="12" font-weight="600">REASONING</text>
+                            <rect x="230" y="110" width="140" height="60" rx="8" fill="none" stroke="#EE7733" stroke-width="2" />
+                            <text x="300" y="138" text-anchor="middle" fill="#f5f0e8" font-size="12" font-weight="600">REASONING</text>
+                            <text x="300" y="154" text-anchor="middle" fill="#f5f0e8" font-size="12" font-weight="600">NODE</text>
 
-                    <rect x="430" y="110" width="140" height="60" rx="8" fill="none" stroke="#aaa" stroke-width="1.5" />
-                    <text x="500" y="145" text-anchor="middle" fill="#333" font-size="12" font-weight="600">TOOL NODE</text>
+                            <rect x="430" y="110" width="140" height="60" rx="8" fill="none" stroke="#8c857d" stroke-width="1.5" />
+                            <text x="500" y="138" text-anchor="middle" fill="#f5f0e8" font-size="12" font-weight="600">TOOL</text>
+                            <text x="500" y="154" text-anchor="middle" fill="#f5f0e8" font-size="12" font-weight="600">EXECUTION</text>
 
-                    <rect x="630" y="110" width="120" height="60" rx="8" fill="#f5f5f5" stroke="#ccc" />
-                    <text x="690" y="145" text-anchor="middle" fill="#666" font-size="12" font-weight="600">COMPACT</text>
+                            <rect x="630" y="110" width="120" height="60" rx="8" fill="#24211e" stroke="#3d3833" stroke-width="1.5" />
+                            <text x="690" y="145" text-anchor="middle" fill="#8c857d" font-size="11" font-weight="600">COMPACT</text>
 
-                    <!-- Arrows -->
-                    <line x1="170" y1="140" x2="230" y2="140" stroke="#999" stroke-width="1.5" marker-end="url(#ah)" />
-                    <line x1="370" y1="140" x2="430" y2="140" stroke="#C66B4D" stroke-width="1.5" marker-end="url(#ah-accent)" />
-                    <line x1="570" y1="140" x2="630" y2="140" stroke="#999" stroke-width="1.5" marker-end="url(#ah)" />
-                    
-                    <!-- Feedback Loop -->
-                    <path d="M 500 170 Q 500 230 300 230 L 300 170" fill="none" stroke="#C66B4D" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ah-accent)" />
-                    <text x="400" y="220" text-anchor="middle" fill="#C66B4D" font-size="10" font-style="italic">Tool Observation Loop</text>
-                </svg>
-            </div>
+                            <line x1="170" y1="140" x2="230" y2="140" stroke="#8c857d" stroke-width="1.5" marker-end="url(#ah)" />
+                            <line x1="370" y1="140" x2="430" y2="140" stroke="#EE7733" stroke-width="1.5" marker-end="url(#ah-accent)" />
+                            <line x1="570" y1="140" x2="630" y2="140" stroke="#8c857d" stroke-width="1.5" marker-end="url(#ah)" />
 
-            <div class="callout">
-                <p>
-                    <strong>Core Innovation:</strong> Unlike standard agents that might hallucinate a sequence 
-                    of actions, Momobot uses a <code>task_state.json</code> to maintain a structured plan. 
-                    It tracks <code>pending → running → done</code> statuses, making it resilient to crashes 
-                    and capable of complex multi-step recovery.
-                </p>
-            </div>
-        </div>
+                            <path d="M 500 170 Q 500 230 300 230 L 300 170" fill="none" stroke="#EE7733" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ah-accent)" />
+                            <text x="400" y="220" text-anchor="middle" fill="#EE7733" font-size="10" font-style="italic">Tool Observation Loop</text>
+                        </svg>
+                    </div>
 
-        <!-- ══ 03. TOOL ECOSYSTEM ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">03 — Tool Ecosystem</span>
-            <h2>Beyond Text Generation</h2>
-            <p>
-                To be useful, an agent needs a "body." Momobot's toolset is designed for high-fidelity 
-                interaction with the local OS and the web.
-            </p>
+                    <div class="callout">
+                        <p>
+                            <strong>Core Innovation:</strong> Unlike standard agents that might hallucinate a sequence of actions, Momobot uses a <code>task_state.json</code> to maintain a structured plan. It tracks <code>pending → running → done</code> statuses, making it resilient to crashes and capable of complex multi-step recovery.
+                        </p>
+                    </div>
+                </article>
 
-            <table class="perf-table">
-                <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Tool</th>
-                        <th>Capability</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>System</strong></td>
-                        <td><code>bash_shell</code></td>
-                        <td>Persistent PowerShell session (cwd & env survive)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Files</strong></td>
-                        <td><code>str_replace_tool</code></td>
-                        <td>Surgical, diff-based file editing (no accidental overwrites)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Vision</strong></td>
-                        <td><code>view_image</code></td>
-                        <td>Playwright rendering → Vision LLM analysis</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Knowledge</strong></td>
-                        <td><code>memory_tools</code></td>
-                        <td>Shard-based long-term storage (Keyword index)</td>
-                    </tr>
-                    <tr>
-                        <td><strong>Planning</strong></td>
-                        <td><code>init_task</code></td>
-                        <td>Graph-based dependency tracking for goals</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                <article class="content-section reveal">
+                    <span class="section-num">03 — Tool Ecosystem</span>
+                    <h2>Beyond Text Generation</h2>
+                    <p>
+                        To be useful, an agent needs a "body." Momobot's toolset is designed for high-fidelity interaction with the local OS and the web.
+                    </p>
 
-        <!-- ══ 04. CONTEXT MANAGEMENT ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">04 — Context Engineering</span>
-            <h2>The Compaction Problem</h2>
-            <p>
-                Long sessions eventually hit the LLM's context limit, leading to "forgetfulness" or 
-                performance degradation. Momobot implements an active <strong>Compaction Trigger</strong>.
-            </p>
+                    <table class="perf-table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Tool</th>
+                                <th>Capability</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>System</strong></td>
+                                <td><code>bash_shell</code></td>
+                                <td>Persistent PowerShell session (cwd and env survive)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Files</strong></td>
+                                <td><code>str_replace_tool</code></td>
+                                <td>Surgical, diff-based file editing (no accidental overwrites)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vision</strong></td>
+                                <td><code>view_image</code></td>
+                                <td>Playwright rendering — Vision LLM analysis</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Knowledge</strong></td>
+                                <td><code>memory_tools</code></td>
+                                <td>Shard-based long-term storage (Keyword index)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Planning</strong></td>
+                                <td><code>init_task</code></td>
+                                <td>Graph-based dependency tracking for goals</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </article>
 
-            <div class="code-block">
-                <pre><span class="comment"># Logic for context health maintenance</span>
-<span class="keyword">if</span> current_tokens > COMPACTION_THRESHOLD:
-    <span class="comment"># Preserve most recent messages for immediate flow</span>
-    history_to_summarize = messages[<span class="colon">:</span> -RECENT_WINDOW]
-    
-    <span class="comment"># Generate a dense state summary</span>
+                <article class="content-section reveal">
+                    <span class="section-num">04 — Context Engineering</span>
+                    <h2>The Compaction Problem</h2>
+                    <p>
+                        Long sessions eventually hit the LLM's context limit, leading to "forgetfulness" or performance degradation. Momobot implements an active <strong>Compaction Trigger</strong>.
+                    </p>
+
+                    <pre data-label="CONTEXT_COMPACTION.PY"><code><span class="code-comment"># Logic for context health maintenance</span>
+<span class="code-keyword">if</span> current_tokens <span class="code-keyword">&gt;</span> COMPACTION_THRESHOLD:
+    <span class="code-comment"># Preserve most recent messages for immediate flow</span>
+    history_to_summarize = messages[:-RECENT_WINDOW]
+
+    <span class="code-comment"># Generate a dense state summary</span>
     summary = llm.generate_summary(history_to_summarize)
-    
-    <span class="comment"># Update rolling session state and prune history</span>
+
+    <span class="code-comment"># Update rolling session state and prune history</span>
     session_state.update(summary)
-    messages = messages[<span class="colon"></span> -RECENT_WINDOW]</pre>
-            </div>
+    messages = messages[-RECENT_WINDOW:]</code></pre>
 
-            <p>
-                This ensures that critical decisions made 50 turns ago are preserved in a 
-                condensed summary, while the immediate conversation remains fluid and high-resolution.
-            </p>
+                    <p>
+                        This ensures that critical decisions made 50 turns ago are preserved in a condensed summary, while the immediate conversation remains fluid and high-resolution.
+                    </p>
+                </article>
+
+                <article class="content-section reveal">
+                    <span class="section-num">05 — Impact</span>
+                    <h2>From Chatbot to Co-Engineer</h2>
+                    <p>
+                        Momobot transforms the AI interaction from "asking for code" to "assigning a project." It is capable of:
+                    </p>
+                    <ul class="impact-list">
+                        <li><strong>Autonomous Refactoring:</strong> Reading a codebase, identifying a pattern, and applying surgical edits across multiple files.</li>
+                        <li><strong>Research Loops:</strong> Searching the web, fetching content, and synthesizing a report into the Obsidian vault.</li>
+                        <li><strong>Visual Debugging:</strong> Rendering a web page, analyzing the layout via vision, and fixing CSS issues.</li>
+                        <li><strong>Persistent Learning:</strong> Remembering a user's technical preferences across weeks of different sessions.</li>
+                    </ul>
+                    <a href="https://github.com/Aniruddh5502/momobot" target="_blank" rel="noopener" class="github-cta">
+                        <svg viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+                        Technical Repository
+                    </a>
+                </article>
+            </main>
+
+            <aside class="sidebar">
+                <section class="reveal">
+                    <h4>Quick Facts</h4>
+                    <ul class="meta-list">
+                        <li><strong>Runtime:</strong> Local (Ollama)</li>
+                        <li><strong>Hardware:</strong> 4 GB Celeron</li>
+                        <li><strong>Graph:</strong> LangGraph</li>
+                        <li><strong>Memory:</strong> Flat-file shards</li>
+                        <li><strong>Context:</strong> 100k token compaction</li>
+                    </ul>
+                </section>
+
+                <section class="reveal">
+                    <h4>Key Capabilities</h4>
+                    <ul class="meta-list">
+                        <li>Multi-step reasoning loops</li>
+                        <li>Persistent shell (PowerShell)</li>
+                        <li>Vision-based analysis</li>
+                        <li>Semantic memory CRUD</li>
+                        <li>Subagent delegation</li>
+                        <li>Structured task planning</li>
+                    </ul>
+                </section>
+            </aside>
         </div>
 
-        <!-- ══ 05. FINAL IMPACT ══ -->
-        <div class="content-section reveal">
-            <span class="section-num">05 — Impact</span>
-            <h2>From Chatbot to Co-Engineer</h2>
-            <p>
-                Momobot transforms the AI interaction from "asking for code" to "assigning a project." 
-                It is capable of:
-            </p>
-            <ul class="impact-list">
-                <li><strong>Autonomous Refactoring:</strong> Reading a codebase, identifying a pattern, and applying surgical edits across multiple files.</li>
-                <li><strong>Research Loops:</strong> Searching the web, fetching content, and synthesizing a report into the Obsidian vault.</li>
-                <li><strong>Visual Debugging:</strong> Rendering a web page, analyzing the layout via vision, and fixing CSS issues.</li>
-                <li><strong>Persistent Learning:</strong> Remembering a user's technical preferences across weeks of different sessions.</li>
-            </ul>
-            <a href="https://github.com/Aniruddh5502/momobot" target="_blank" class="github-cta">Technical Repository</a>
-        </div>
+        <footer class="site-footer reveal">
+            <p>Aniruddho Biswas Badhon — 2024</p>
+        </footer>
     </div>
 
-    <script>
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('active');
-            });
-        }, { threshold: 0.08 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    </script>
+    <script src="script.js"></script>
 </body>
-
 </html>
