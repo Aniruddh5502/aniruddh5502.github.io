@@ -1,7 +1,3 @@
-@import url('fonts/AnthropicSerifWebText.ttf') format('truetype');
-@import url('fonts/AnthropicSansWebText.ttf') format('truetype');
-@import url('fonts/AnthropicMonoVariable.ttf') format('truetype');
-
 :root {
     --ink: #1a1816;
     --ink-light: #2d2a26;
