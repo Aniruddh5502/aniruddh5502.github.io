@@ -2,4 +2,4 @@
 .env
 
 # Folders
-.momo/
+.momo/"validate_seo.py" 
