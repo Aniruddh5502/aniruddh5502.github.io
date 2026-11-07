@@ -1,0 +1,16 @@
+# Aniruddho Biswas Badhon — Computational Mechanical Engineer
+> Portfolio and technical blog for Aniruddho Biswas Badhon, specializing in surrogate modeling for FEA acceleration, fault-tolerant embedded systems, and local-first AI agents.
+
+## Key Pages
+- [Homepage](https://aniruddh5502.github.io/) — Overview of expertise and projects
+- [Surrogate Model Framework](https://aniruddh5502.github.io/surrogate-model.html) — 1.35M× FEA speedup via ML surrogates
+- [Fault-Tolerant ESP32 Firmware](https://aniruddh5502.github.io/fault-tolerant.html) — TMR with 99.999% fault coverage
+- [ANSYS Automation](https://aniruddh5502.github.io/ansys.html) — 500+ simulations automated via PyDPF
+- [MATLAB Signal Processing & System ID](https://aniruddh5502.github.io/matlab.html) — MathWorks certified workflows
+- [Momobot: Local-First AI Agent](https://aniruddh5502.github.io/momobot.html) — LangGraph + Ollama harness
+- [SOLIDWORKS Automation](https://aniruddh5502.github.io/solidworks.html) — Parametric CAD & API-driven design
+
+## Author
+Aniruddho Biswas Badhon — Computational Mechanical Engineer
+- GitHub: https://github.com/Aniruddh5502
+- LinkedIn: https://linkedin.com/in/aniruddh5502

@@ -1,18 +1,90 @@
 {
-    "profile_data": {
-        "id": "profile_data",
-        "name": "Profile dataset to identify columns",
+    "frame-question": {
+        "id": "frame-question",
+        "name": "Frame the research question and scope",
         "deliverable": "No deliverable specified",
-        "verify_cmd": "ls simulation_data.csv",
+        "verify_cmd": "echo 'Question framed'",
+        "depends_on": [],
+        "status": "done",
+        "evidence": "Question framed, scope defined, assumptions listed"
+    },
+    "map-field": {
+        "id": "map-field",
+        "name": "Map the field: find core vocabulary, key sources, current state",
+        "deliverable": "No deliverable specified",
+        "verify_cmd": "echo 'Field mapped'",
         "depends_on": [],
         "status": "pending",
         "evidence": null
     },
-    "filter_failed_sims": {
-        "id": "filter_failed_sims",
-        "name": "Identify failed or incomplete simulations",
+    "build-hypotheses": {
+        "id": "build-hypotheses",
+        "name": "Build competing hypotheses for each sub-question",
         "deliverable": "No deliverable specified",
-        "verify_cmd": "ls failed_sims.txt",
+        "verify_cmd": "echo 'Hypotheses built'",
+        "depends_on": [],
+        "status": "pending",
+        "evidence": null
+    },
+    "gather-evidence-1": {
+        "id": "gather-evidence-1",
+        "name": "Gather evidence: Content strategy & lead capture",
+        "deliverable": "No deliverable specified",
+        "verify_cmd": "echo 'Evidence gathered for content/lead capture'",
+        "depends_on": [],
+        "status": "pending",
+        "evidence": null
+    },
+    "gather-evidence-2": {
+        "id": "gather-evidence-2",
+        "name": "Gather evidence: Authority signals & conversion funnels",
+        "deliverable": "No deliverable specified",
+        "verify_cmd": "echo 'Evidence gathered for authority/funnels'",
+        "depends_on": [],
+        "status": "pending",
+        "evidence": null
+    },
+    "gather-evidence-3": {
+        "id": "gather-evidence-3",
+        "name": "Gather evidence: SEO/content marketing & portfolio presentation",
+        "deliverable": "No deliverable specified",
+        "verify_cmd": "echo 'Evidence gathered for SEO/portfolio'",
+        "depends_on": [],
+        "status": "pending",
+        "evidence": null
+    },
+    "gather-evidence-4": {
+        "id": "gather-evidence-4",
+        "name": "Gather evidence: Pricing/positioning & trust elements",
+        "deliverable": "No deliverable specified",
+        "verify_cmd": "echo 'Evidence gathered for pricing/trust'",
+        "depends_on": [],
+        "status": "pending",
+        "evidence": null
+    },
+    "test-hypotheses": {
+        "id": "test-hypotheses",
+        "name": "Test hypotheses against evidence, run falsification searches",
+        "deliverable": "No deliverable specified",
+        "verify_cmd": "echo 'Hypotheses tested'",
+        "depends_on": [],
+        "status": "pending",
+        "evidence": null
+    },
+    "synthesize-report": {
+        "id": "synthesize-report",
+        "name": "Synthesize findings into structured report",
+        "deliverable": "No deliverable specified",
+        "verify_cmd": "echo 'Report synthesized'",
+        "depends_on": [],
+        "status": "pending",
+        "evidence": null
+    },
+    "self-audit": {
+        "id": "self-audit",
+        "name": "Final self-audit and red-teaming",
+        "deliverable": "No deliverable specified",
+        "verify_cmd": "echo 'Self-audit complete'",
         "depends_on": [],
         "status": "pending",
         "evidence": null
