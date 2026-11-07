@@ -116,7 +116,9 @@ a{
     line-height: 1.4;
     font-weight: 200;
     color: var(--ink);
+    background-color: var(--accent-light);
     display: block;
+    padding: 10px;
 }
 
 .reliability-statement {
